@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate
             return true;
         }
 
-        const token = this.extractTokenFromHeader(request);
+        const token = this.extractTokenFromCookie(request);
 
         if (!token)
         {
@@ -63,5 +63,15 @@ export class RolesGuard implements CanActivate
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
 
         return type === 'Bearer' ? token : undefined;
+    }
+
+    private extractTokenFromCookie(request: Request): string | undefined
+    {
+        if (request.cookies && request.cookies.token)
+        {
+            return request.cookies.token;
+        }
+
+        return null;
     }
 }

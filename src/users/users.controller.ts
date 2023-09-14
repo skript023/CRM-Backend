@@ -42,7 +42,6 @@ export class UsersController
         return this.userService.users();
     }
 
-    @UseGuards(AuthGuard)
     @Get('detail/:id') 
     async get_by_id(@Param('id') id: string): Promise<User>
     {
