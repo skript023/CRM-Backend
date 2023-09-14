@@ -39,6 +39,9 @@ export class User
     computer_name: string
 
     @Prop({ type: String, default: null })
+    image: string
+
+    @Prop({ type: String, default: null })
     expired: string
 
     @Prop({ type: String, default: null })
