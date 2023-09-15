@@ -8,7 +8,7 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 @Injectable()
 export class ActivityService 
 {
-    constructor(@InjectModel(Activity.name) private activityModel: mongoose.Model<Activity>)
+    constructor(@InjectModel(Activity.name) private activityModel: mongoose.Model<Activity>, )
     {}
 
     getHello(): string 

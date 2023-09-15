@@ -11,30 +11,42 @@ export class ProductsService
     constructor(@InjectModel(Product.name) private productModel: mongoose.Model<Product>)
     {}
 
-    create(createProductDto: CreateProductDto)
+    async create(createProductDto: CreateProductDto)
     {
-        return this.productModel.create(createProductDto);
+        this.productModel.create(createProductDto);
+
+        return {
+            message: 'Product added successfully'
+        } 
     }
 
-    findAll()
+    async findAll()
     {
         return this.productModel.find(null, { createdAt: 0, updatedAt: 0, __v: 0 });
     }
 
-    findOne(id: string)
+    async findOne(id: string)
     {
         return this.productModel.findById(id, { createdAt: 0, updatedAt: 0, __v: 0 })
     }
 
-    update(id: string, updateProductDto: UpdateProductDto)
+    async update(id: string, updateProductDto: UpdateProductDto)
     {
-        return this.productModel.findByIdAndUpdate(id, updateProductDto, {
+        const product = await this.productModel.findByIdAndUpdate(id, updateProductDto, {
             new: true, runValidators: true
         });
+
+        return {
+            message: `${product.name} updated successfully`
+        }
     }
 
-    remove(id: string)
+    async remove(id: string)
     {
-        return this.productModel.findByIdAndDelete(id);
+        const product = await this.productModel.findByIdAndDelete(id);
+
+        return {
+            message: `${product.name} deleted successfully`
+        }
     }
 }

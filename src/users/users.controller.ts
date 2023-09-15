@@ -1,17 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, NotFoundException, UseInterceptors, Put, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, NotFoundException, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UploadedFile, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schema/user.schema';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { AuthGuard } from '../auth/auth.guard';
-import { Roles } from '../role/decorator/role.decorator';
-import { RolesGuard } from '../role/guard/role.guard';
-import { Actions } from '../role/decorator/action.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
 import * as fs from 'fs';
+import { Auth } from '../auth/auth.decorator';
 
 @Controller('user')
 export class UsersController 
@@ -19,10 +16,10 @@ export class UsersController
     constructor(private userService: UsersService) {}
 
     @Post('add')
-    @Roles(['admin'])
-    @Actions('read')
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin', 'staff'],
+        access: 'create'
+    })
     @UseInterceptors(FileInterceptor('image', {
         storage: diskStorage({
             destination: './uploads',
@@ -55,6 +52,7 @@ export class UsersController
     }
 
     @Get('avatar/:name')
+    @Auth()
     async image(@Param('name') name, @Res() res: Response)
     {
         res.sendFile(name, {root: './uploads'})
@@ -67,21 +65,26 @@ export class UsersController
     }
 
     @Get()
-    @Roles(['admin'])
-    @Actions('read')
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin', 'staff'],
+        access: 'read'
+    })
     async users() : Promise<User[]> 
     {
         return this.userService.users();
     }
 
+    @Auth({
+        role: ['admin', 'staff'],
+        access: 'read'
+    })
     @Get('detail/:id') 
     async get_by_id(@Param('id') id: string): Promise<User>
     {
         return this.userService.find_by_id(id);
     }
 
+    @Auth()
     @Patch('update/password/:id')
     async password_change(@Param('id') id: string, @Body() user: UpdatePasswordDto) 
     {
@@ -107,7 +110,8 @@ export class UsersController
             }
         }),
         fileFilter: (req, file, cb) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+            {
                 return cb(null, false)
             }
 
@@ -120,7 +124,10 @@ export class UsersController
         return this.userService.update(id, updateUserDto, file); 
     }
 
-    @UseGuards(AuthGuard)
+    @Auth({
+        role: ['admin', 'staff'],
+        access: 'delete'
+    })
     @Delete('delete/:id')
     async delete(@Param('id') id: string) 
     {
@@ -131,7 +138,7 @@ export class UsersController
         }
     }
 
-    @UseGuards(AuthGuard)
+    @Auth()
     @Get('profile')
     async getProfile(@Request() req)
     {

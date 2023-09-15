@@ -1,12 +1,9 @@
-import { Controller, Get, Body, Post, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Body, Post, Param, Put, Delete } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { Activity } from './schema/activity.schema';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
-import { AuthGuard } from '../auth/auth.guard';
-import { RolesGuard } from '../role/guard/role.guard';
-import { Roles } from '../role/decorator/role.decorator';
-import { Actions } from '../role/decorator/action.decorator';
+import { Auth } from '../auth/auth.decorator';
 
 @Controller('activity')
 export class ActivityController 
@@ -14,31 +11,31 @@ export class ActivityController
     constructor(private activityService: ActivityService)
     {}
 
-    @Actions('read')
-    @Roles(['admin'])
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin', 'staff'],
+        access: 'read'
+    })
     @Get()
     async activities(): Promise<Activity[]>
     {
         return this.activityService.findAll()
     }
 
-    @UseGuards(AuthGuard)
+    @Auth()
     @Get(':id')
     async get_by_id(@Param('id') id: string): Promise<Activity>
     {
         return this.activityService.findById(id)
     }
 
-    @UseGuards(AuthGuard)
+    @Auth()
     @Post('add')
     async create(@Body() body: CreateActivityDto): Promise<Activity>
     {
         return this.activityService.create(body)
     }
 
-    @UseGuards(AuthGuard)
+    @Auth()
     @Put('update/:id')
     async update(@Param('id') id: string, @Body() activity: UpdateActivityDto)
     {
@@ -49,7 +46,7 @@ export class ActivityController
         }
     }
 
-    @UseGuards(AuthGuard)
+    @Auth()
     @Delete('delete/:id')
     async delete(@Param('id') id: string)
     {

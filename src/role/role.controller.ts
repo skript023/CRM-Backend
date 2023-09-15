@@ -10,7 +10,7 @@ export class RoleController {
     constructor(private readonly roleService: RoleService) {}
 
     @Auth({
-        role: ['admin'],
+        role: ['admin', 'staff'],
         access: 'create'
     })
     @Post('add')
@@ -24,7 +24,7 @@ export class RoleController {
     }
 
     @Auth({
-        role: ['admin'],
+        role: ['admin', 'staff'],
         access: 'read'
     })
     @Get()
@@ -35,7 +35,7 @@ export class RoleController {
 
 
     @Auth({
-        role: ['admin', 'staff', 'user'],
+        role: ['admin', 'staff'],
         access: 'read'
     })
     @Get('detail/:id')
@@ -45,7 +45,7 @@ export class RoleController {
     }
 
     @Auth({
-        role: ['admin', 'staff', 'user'],
+        role: ['admin'],
         access: 'update'
     })
     @Patch('update/:id')
