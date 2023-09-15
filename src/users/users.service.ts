@@ -75,6 +75,11 @@ export class UsersService
         {
             const user = await this.userModel.findById(id);
 
+            if (user.image == file.filename)
+            {
+                fs.unlinkSync(file.path);
+            }
+
             updatedData.image = file.filename;
         }
 
