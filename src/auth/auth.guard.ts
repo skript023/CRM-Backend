@@ -2,15 +2,19 @@ import {
     CanActivate,
     ExecutionContext,
     Injectable,
+    NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { Actions } from '../role/decorator/action.decorator';
+import { Roles } from '../role/decorator/role.decorator';
   
 @Injectable()
 export class AuthGuard implements CanActivate 
 {
-    constructor(private jwtService: JwtService) {}
+    constructor(private reflector: Reflector, private jwtService: JwtService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> 
     {
@@ -18,9 +22,18 @@ export class AuthGuard implements CanActivate
 
         const token = this.extractTokenFromCookie(request);
 
+        const roles = this.reflector.get(Roles, context.getHandler());
+
+        const actions = this.reflector.get(Actions, context.getHandler());
+
         if (!token) 
         {
             throw new UnauthorizedException();
+        }
+
+        if (!roles && !actions)
+        {
+            return true;
         }
 
         try 
@@ -34,13 +47,25 @@ export class AuthGuard implements CanActivate
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
             request['user'] = payload;
+
+            const role = request.user['role']
+
+            const access = role['access']
+
+            if (!role['name']) throw new NotFoundException('Role not found')
+
+            const role_exist = roles.some(value => value === role['name']);
+
+            const action_exist = access[actions]
+
+            if (!role_exist || !action_exist) throw new UnauthorizedException()
+
+            return role_exist && action_exist;
         } 
         catch 
         {
             throw new UnauthorizedException();
         }
-
-        return true;
     }
 
     private extractTokenFromHeader(request: Request): string | undefined 

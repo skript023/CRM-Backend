@@ -14,22 +14,22 @@ export class RolesGuard implements CanActivate
 
     async canActivate(context: ExecutionContext): Promise<boolean>
     {
+        const request = context.switchToHttp().getRequest();
+
         const roles = this.reflector.get(Roles, context.getHandler());
 
         const actions = this.reflector.get(Actions, context.getHandler());
-
-        const request = context.switchToHttp().getRequest();
-
-        if (!roles)
-        {
-            return true;
-        }
 
         const token = this.extractTokenFromCookie(request);
 
         if (!token)
         {
             throw new UnauthorizedException();
+        }
+
+        if (!roles)
+        {
+            return true;
         }
 
         const payload = await this.jwtService.verifyAsync(

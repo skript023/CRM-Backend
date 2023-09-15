@@ -1,20 +1,38 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose'
+import * as bcrypt from 'bcrypt'
 import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RoleService } from '../role/role.service';
 
 @Injectable()
 export class UsersService 
 {
-    constructor(@InjectModel(User.name) private userModel: mongoose.Model<User>)
+    constructor(@InjectModel(User.name) private userModel: mongoose.Model<User>, private roleService: RoleService)
     {}
 
-    async create(user: CreateUserDto) : Promise<User>
+    async create(user: CreateUserDto, file: Express.Multer.File)
     {
-        return this.userModel.create(user)
+        user.password = await bcrypt.hash(user.password, 10)
+
+        const role = await this.roleService.find_by_name(user.role_id)
+
+        if (!role) throw new NotFoundException('Create user failed, role not found, try an existing role')
+
+        user.role_id = role._id
+
+        console.log(file.filename)
+
+        user.image = file.filename
+
+        this.userModel.create(user)
+
+        return {
+            message: 'Account creation success'
+        }
     }
 
     async users(): Promise<User[]>
@@ -49,7 +67,7 @@ export class UsersService
         })
     }
 
-    async update(id: string, user: UpdateUserDto) : Promise<User>
+    async update(id: string, user: UpdateUserDto, file: Express.Multer.File)
     {
         const res = await this.userModel.findByIdAndUpdate(id, user, {
             new: true, runValidators: true, select: ['fullname']
@@ -57,7 +75,9 @@ export class UsersService
 
         if (!res) throw new NotFoundException('User not found.')
 
-        return res
+        return {
+            message: `Success update ${user.fullname} data`
+        }
     }
 
     async delete(id: string) : Promise<User>

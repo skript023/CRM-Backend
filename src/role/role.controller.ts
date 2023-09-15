@@ -3,19 +3,16 @@ import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './schema/role.schema';
-import { AuthGuard } from '../auth/auth.guard';
-import { Roles } from './decorator/role.decorator';
-import { RolesGuard } from './guard/role.guard';
-import { Actions } from './decorator/action.decorator';
+import { Auth } from '../auth/auth.decorator';
 
 @Controller('role')
 export class RoleController {
     constructor(private readonly roleService: RoleService) {}
 
-    @Actions('create')
-    @Roles(['admin'])
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin'],
+        access: 'create'
+    })
     @Post('add')
     async create(@Body() createRoleDto: CreateRoleDto) : Promise<any>
     {
@@ -26,10 +23,10 @@ export class RoleController {
         }
     }
 
-    @Actions('read')
-    @Roles(['admin'])
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin'],
+        access: 'read'
+    })
     @Get()
     async findAll() : Promise<Role[]>
     {
@@ -37,19 +34,20 @@ export class RoleController {
     }
 
 
-    @Roles(['admin', 'user', 'staff'])
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin', 'staff', 'user'],
+        access: 'read'
+    })
     @Get('detail/:id')
     async findOne(@Param('id') id: string) : Promise<Role>
     {
         return this.roleService.findOne(id);
     }
 
-    @Actions('update')
-    @Roles(['admin'])
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin', 'staff', 'user'],
+        access: 'update'
+    })
     @Patch('update/:id')
     async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) : Promise<any>
     {
@@ -60,10 +58,10 @@ export class RoleController {
         }
     }
 
-    @Actions('delete')
-    @Roles(['admin'])
-    @UseGuards(AuthGuard)
-    @UseGuards(RolesGuard)
+    @Auth({
+        role: ['admin', 'staff'],
+        access: 'delete'
+    })
     @Delete('delete/:id')
     async remove(@Param('id') id: string) : Promise<any>
     {
