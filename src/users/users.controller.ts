@@ -5,7 +5,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schema/user.schema';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { Response } from 'express';
 import * as fs from 'fs';
 import { Auth } from '../auth/auth.decorator';
@@ -20,26 +19,7 @@ export class UsersController
         role: ['admin', 'staff'],
         access: 'create'
     })
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, cb) => {
-                const name = file.originalname.split('.')[0];
-                const extension = file.originalname.split('.')[1];
-                const filename = `${name}_${Date.now()}.${extension}`
-
-                cb(null, filename)
-            }
-        }),
-        fileFilter: (req, file, cb) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
-            {
-                return cb(null, false)
-            }
-
-            cb(null, true)
-        }
-    }))
+    @UseInterceptors(FileInterceptor('image'))
     async create(@Body() createUserDto: CreateUserDto, @UploadedFile(new ParseFilePipe({
         validators: [
             new MaxFileSizeValidator({ maxSize: 1000000 }),
@@ -98,28 +78,15 @@ export class UsersController
         }
     }
 
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, cb) => {
-                const name = file.originalname.split('.')[0];
-                const file_extension = file.originalname.split('.')[1];
-                const filename = name.split('').join('_') + '_' + Date.now() + '.' + file_extension;
-
-                cb(null, filename)
-            }
-        }),
-        fileFilter: (req, file, cb) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
-            {
-                return cb(null, false)
-            }
-
-            cb(null, true)
-        }
-    }))
+    @UseInterceptors(FileInterceptor('image'))
     @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @UploadedFile() file: Express.Multer.File)
+    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @UploadedFile(new ParseFilePipe({
+        validators: [
+            new MaxFileSizeValidator({ maxSize: 1000000 }),
+            new FileTypeValidator({ fileType: 'image' }),
+        ],
+        fileIsRequired: false,
+    })) file: Express.Multer.File)
     {
         return this.userService.update(id, updateUserDto, file); 
     }

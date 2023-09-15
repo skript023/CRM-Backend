@@ -75,12 +75,6 @@ export class UsersService
         {
             const user = await this.userModel.findById(id);
 
-            if (user.image != null)
-            {
-                console.log(file)
-                fs.unlinkSync(file.path);
-            }
-
             updatedData.image = file.filename;
         }
 
@@ -102,7 +96,7 @@ export class UsersService
         if (!res) throw new NotFoundException('User not found.')
 
         return {
-            message: `Success update ${updatedData.fullname} data`
+            message: `Success update ${res.fullname} data`
         };
     }
 
