@@ -13,7 +13,9 @@ export class AuthService
     {
         const user = await await this.usersService.find_by_name(username);
 
-        const success = await bcrypt.compare(password, user?.password)
+        if (!user) throw new UnauthorizedException('Credential not found');
+
+        const success = await bcrypt.compare(password, user?.password);
 
         if (!success) 
         {

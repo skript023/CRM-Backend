@@ -119,7 +119,7 @@ export class UsersController
         }
     }))
     @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, file: Express.Multer.File)
+    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @UploadedFile() file: Express.Multer.File)
     {
         return this.userService.update(id, updateUserDto, file); 
     }

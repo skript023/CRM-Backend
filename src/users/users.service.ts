@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RoleService } from '../role/role.service';
+import * as fs from 'fs'
 
 @Injectable()
 export class UsersService 
@@ -70,12 +71,20 @@ export class UsersService
 
         if (!updatedData) throw new BadRequestException('Invalid param exception');
 
-        if (updatedData.image != null || updatedData.image != '')
+        if (file != null)
         {
+            const user = await this.userModel.findById(id);
+
+            if (user.image != null)
+            {
+                console.log(file)
+                fs.unlinkSync(file.path);
+            }
+
             updatedData.image = file.filename;
         }
 
-        if (updatedData.password != null || updatedData.password != '')
+        if (updatedData.password != null)
         {
             data.password = await bcrypt.hash(updatedData.password, 10);
         }
