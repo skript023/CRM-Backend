@@ -29,7 +29,7 @@ export class Role
     level: AccessLevel
 }
 
-export const RoleSchema = SchemaFactory.createForClass(Role)
+export const RoleSchema = SchemaFactory.createForClass(Role);
 
 RoleSchema.virtual('user', {
     ref: 'User',

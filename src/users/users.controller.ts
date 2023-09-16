@@ -3,11 +3,10 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schema/user.schema';
-import { UpdatePasswordDto } from './dto/update-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { Auth } from '../auth/auth.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 @Controller('user')
 export class UsersController 
@@ -64,20 +63,6 @@ export class UsersController
         return this.userService.find_by_id(id);
     }
 
-    @Auth()
-    @Patch('update/password/:id')
-    async password_change(@Param('id') id: string, @Body() user: UpdatePasswordDto) 
-    {
-        //let data = user
-        //data.password = await bcrypt.hash(user.password, 10)
-
-        const res = await this.userService.password_change(id, user)
-    
-        return {
-            message: `${res.fullname} change password successfully`
-        }
-    }
-
     @UseInterceptors(FileInterceptor('image'))
     @Patch('update/:id')
     async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @UploadedFile(new ParseFilePipe({
@@ -98,11 +83,7 @@ export class UsersController
     @Delete('delete/:id')
     async delete(@Param('id') id: string) 
     {
-        const user = await this.userService.delete(id);
-
-        return {
-            message: `Success delete ${user.fullname} data`
-        }
+        return this.userService.delete(id);
     }
 
     @Auth()

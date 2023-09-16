@@ -20,7 +20,7 @@ export class AuthController
             secure: true,
             sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-        }).send({status: 'ok'})
+        }).send({ message: 'Login success' });
     }
 
     @UseGuards(AuthGuard)

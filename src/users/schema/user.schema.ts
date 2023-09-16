@@ -65,3 +65,9 @@ UserSchema.virtual('activity', {
     localField: '_id',
     foreignField: 'user_id'
 })
+
+UserSchema.virtual('asset', {
+    ref: 'Asset',
+    localField: '_id',
+    foreignField: 'user_id'
+})

@@ -1,7 +1,7 @@
 import { applyDecorators, UseGuards } from "@nestjs/common";
-import { Actions } from "../role/decorator/action.decorator";
-import { Roles } from "../role/decorator/role.decorator";
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "../auth.guard";
+import { Actions } from "../../role/decorator/action.decorator";
+import { Roles } from "../../role/decorator/role.decorator";
 
 interface AuthOption {
     role?: string[]

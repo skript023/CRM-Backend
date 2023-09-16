@@ -4,7 +4,6 @@ import * as mongoose from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RoleService } from '../role/role.service';
 import * as fs from 'fs'
@@ -38,7 +37,7 @@ export class UsersService
     {
         const users = await this.userModel.
             find(null, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).
-            populate('role', ['name', 'level', 'access'], 'Role');
+            populate('role', ['name', 'level', 'access']);
 
         return users;
     }
@@ -46,7 +45,7 @@ export class UsersService
     async find_by_id(id: string): Promise<User>
     {
         const user = await this.userModel.findById(id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).
-            populate('role', ['name', 'level', 'access'], 'Role');
+            populate('role', ['name', 'level', 'access']);
 
         return user;
     }
@@ -55,16 +54,9 @@ export class UsersService
     {
         return this.userModel.
             findOne({ username }, { createdAt: 0, updatedAt: 0, __v: 0 }).
-            populate('role', ['name', 'level', 'access'], 'Role');
+            populate('role', ['name', 'level', 'access']);
     }
   
-    async password_change(id : string, user : UpdatePasswordDto): Promise<User>
-    {
-        return this.userModel.findByIdAndUpdate(id, user, {
-            new: true, runValidators: true
-        });
-    }
-
     async update(id: string, updatedData: UpdateUserDto, file: Express.Multer.File)
     {
         let data: any = {};
@@ -77,10 +69,10 @@ export class UsersService
 
             if (user.image == file.filename)
             {
-                fs.unlinkSync(file.path);
+                fs.unlinkSync(`${file.path}/${file.filename}`);
             }
 
-            updatedData.image = file.filename;
+            data.image = file.filename;
         }
 
         if (updatedData.password != null)
@@ -94,7 +86,7 @@ export class UsersService
         data.hardware_id = updatedData.hardware_id;
         data.computer_name = updatedData.computer_name;
 
-        const res = await this.userModel.findByIdAndUpdate(id, updatedData, {
+        const res = await this.userModel.findByIdAndUpdate(id, data, {
             new: true, runValidators: true, select: ['fullname']
         });
 
@@ -105,7 +97,7 @@ export class UsersService
         };
     }
 
-    async delete(id: string) : Promise<User>
+    async delete(id: string) : Promise<any>
     {
         const res = await this.userModel.findByIdAndDelete(id, {
             select: ['fullname']
@@ -113,6 +105,8 @@ export class UsersService
 
         if (!res) throw new NotFoundException('User not found.')
 
-        return res
+        return {
+            message: `Success delete ${res.fullname} data`
+        }
     }
 }
