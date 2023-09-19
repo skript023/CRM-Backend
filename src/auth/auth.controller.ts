@@ -11,16 +11,9 @@ export class AuthController
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    async signIn(@Body() signInDto: signInDto, @Res({ passthrough: true }) res: Response) : Promise<any>
+    async signIn(@Body() signInDto: signInDto) : Promise<any>
     {
-        const { token } = await this.authService.signIn(signInDto.username, signInDto.password);
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-        }).send({ message: 'Login success!' });
+        return this.authService.signIn(signInDto.username, signInDto.password);
     }
 
     @UseGuards(AuthGuard)
