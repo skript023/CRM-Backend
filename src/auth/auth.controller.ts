@@ -32,9 +32,8 @@ export class AuthController
 
     @UseGuards(AuthGuard)
     @Get('logout')
-    async logout(@Request() req, @Res({ passthrough: true }) res: Response)
+    async logout(@Res({ passthrough: true }) res: Response)
     {
-        req.session.destroy();
         res.clearCookie('token').send({ message: 'Logout success' });
     }
 }
