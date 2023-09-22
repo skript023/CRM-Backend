@@ -20,7 +20,7 @@ export class AuthController
             secure: true,
             sameSite: 'none',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-        }).send({ message: 'Login success!' });
+        }).send({ message: 'Login success' });
     }
 
     @UseGuards(AuthGuard)
@@ -28,5 +28,13 @@ export class AuthController
     async getProfile(@Request() req): Promise<any>
     {
         return req.user;
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('logout')
+    async logout(@Request() req, @Res({ passthrough: true }) res: Response)
+    {
+        req.session.destroy();
+        res.clearCookie('token').send({ message: 'Logout success' });
     }
 }
