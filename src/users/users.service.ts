@@ -50,7 +50,7 @@ export class UsersService
         return user;
     }
 
-    async login(username: string, password: string)
+    async login(username: string, password: string) : Promise<User>
     {
         const user = await this.userModel.findOne({ username }, { createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access']);
 
@@ -63,7 +63,7 @@ export class UsersService
             throw new UnauthorizedException();
         }
 
-        return this.userModel.findById(user.id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access']);
+        return (await this.userModel.findById(user._id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access'])).toJSON();
     }
   
     async update(id: string, updatedData: UpdateUserDto, file: Express.Multer.File)

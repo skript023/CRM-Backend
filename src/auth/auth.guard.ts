@@ -41,14 +41,14 @@ export class AuthGuard implements CanActivate
             );
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
-            request['user'] = payload;
+            request['user'] = payload['user'];
 
             if (!roles && !actions)
             {
                 return true;
             }
 
-            const role = request.user['role']
+            const role = request['user']['role']
 
             const access = role['access']
 
