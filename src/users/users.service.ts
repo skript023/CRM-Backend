@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose'
 import * as bcrypt from 'bcrypt'
@@ -50,11 +50,20 @@ export class UsersService
         return user;
     }
 
-    async find_by_name(username: string)
+    async login(username: string, password: string)
     {
-        return this.userModel.
-            findOne({ username }, { createdAt: 0, updatedAt: 0, __v: 0 }).
-            populate('role', ['name', 'level', 'access']);
+        const user = await this.userModel.findOne({ username }, { createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access']);
+
+        if (!user) throw new UnauthorizedException('Credential not found');
+
+        const success = await bcrypt.compare(password, user.password);
+
+        if (!success)
+        {
+            throw new UnauthorizedException();
+        }
+
+        return this.userModel.findById(user.id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access']);
     }
   
     async update(id: string, updatedData: UpdateUserDto, file: Express.Multer.File)

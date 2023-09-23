@@ -11,24 +11,10 @@ export class AuthService
 
     async signIn(username : string, password : string) : Promise<any>
     {
-        const user = await await this.usersService.find_by_name(username);
-
-        if (!user) throw new UnauthorizedException('Credential not found');
-
-        const success = await bcrypt.compare(password, user?.password);
-
-        if (!success) 
-        {
-            throw new UnauthorizedException();
-        }
+        const user = await await this.usersService.login(username, password);
 
         const payload = { 
-            _id: user._id,
-            fullname: user['fullname'],
-            username: user['username'],
-            email: user['email'],
-            expired: user['expired'],
-            role: user['role']
+            user
         };
 
         return {
