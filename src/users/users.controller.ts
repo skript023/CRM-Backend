@@ -14,10 +14,6 @@ export class UsersController
     constructor(private userService: UsersService) {}
 
     @Post('add')
-    @Auth({
-        role: ['admin', 'staff'],
-        access: 'create'
-    })
     @UseInterceptors(FileInterceptor('image'))
     async create(@Body() createUserDto: CreateUserDto, @UploadedFile(new ParseFilePipe({
         validators: [

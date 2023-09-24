@@ -2,7 +2,6 @@ import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto 
 {
-    @IsNotEmpty()
     role_id: string
     @IsNotEmpty()
     readonly fullname: string

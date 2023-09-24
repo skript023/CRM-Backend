@@ -26,8 +26,14 @@ export class UsersService
 
             user.role_id = role._id;
         }
+        else
+        {
+            user.role_id = '65042e34aca29db82fe65944';
+        }
 
         user.image = file.filename;
+
+        console.log(user)
 
         this.userModel.create(user);
 
