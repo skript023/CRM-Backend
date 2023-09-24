@@ -18,11 +18,14 @@ export class UsersService
     {
         user.password = await bcrypt.hash(user.password, 10);
 
-        const role = await this.roleService.find_by_name(user.role_id);
+        if (user.role_id)
+        {
+            const role = await this.roleService.find_by_name(user.role_id);
 
-        if (!role) throw new NotFoundException('Create user failed, role not found, try an existing role');
+            if (!role) throw new NotFoundException('Create user failed, role not found, try an existing role');
 
-        user.role_id = role._id;
+            user.role_id = role._id;
+        }
 
         user.image = file.filename;
 
