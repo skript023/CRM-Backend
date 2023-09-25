@@ -22,12 +22,10 @@ export class AuthService
         };
     }
 
-    /*
     @Interval(3600000)
     handleCronOffline() {
 
     }
-    */
 
     private async encrypt(text: string): Promise<string>
     {

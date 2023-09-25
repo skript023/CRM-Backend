@@ -27,6 +27,8 @@ export class Asset
     payment: string
     @Prop()
     expired: boolean
+    @Prop({ type: String, required: true })
+    expired_date: string
 };
 
 export const AssetSchema = SchemaFactory.createForClass(Asset);

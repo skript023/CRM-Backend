@@ -33,6 +33,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "mongoose": "^7.5.0",
+    "nestjs-seeder": "^0.3.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
