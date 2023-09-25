@@ -138,7 +138,7 @@ export class UsersService
     }
 
     private async does_user_exist(userCreation: CreateUserDto): Promise<boolean> {
-        const user = await this.userModel.findOne({ username: userCreation.username });
+        const user = await this.userModel.findOne({ username: userCreation.username, email: userCreation.email });
 
         if (user) {
             return true;
