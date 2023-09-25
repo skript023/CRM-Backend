@@ -12,7 +12,7 @@ import { diskStorage } from 'multer';
         MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
         MulterModule.register({
             storage: diskStorage({
-                destination: './assets',
+                destination: __dirname + '/assets',
                 filename: (req, file, cb) => {
                     const name = file.originalname.split('.')[0];
                     const extension = file.originalname.split('.')[1];

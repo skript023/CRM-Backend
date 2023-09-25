@@ -30,7 +30,8 @@ export class UsersController
     @Auth()
     async image(@Param('name') name, @Res() res: Response)
     {
-        res.sendFile(name, {root: __dirname + '/assets'})
+        //res.sendFile(name, {root: __dirname + '/assets'})
+        res.sendFile('https://cdn.glitch.global/134e6d29-f12e-4932-87e4-2031bac5ad1d/' + name);
     }
 
     @Delete('avatar/delete/:name')
