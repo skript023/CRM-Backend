@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose'
 import * as bcrypt from 'bcrypt'
@@ -16,6 +16,8 @@ export class UsersService
 
     async create(user: CreateUserDto, file: Express.Multer.File)
     {
+        if (this.does_user_exist(user)) throw new BadRequestException('Username or Email already used')
+
         user.password = await bcrypt.hash(user.password, 10);
 
         if (user.role_id)
@@ -35,7 +37,14 @@ export class UsersService
 
         console.log(user)
 
-        this.userModel.create(user);
+        try
+        {
+            this.userModel.create(user);
+        }
+        catch
+        {
+            throw new InternalServerErrorException()
+        }
 
         return {
             message: 'Account creation success'
@@ -126,5 +135,15 @@ export class UsersService
         return {
             message: `Success delete ${res.fullname} data`
         }
+    }
+
+    private async does_user_exist(userCreation: CreateUserDto): Promise<boolean> {
+        const user = await this.userModel.findOne({ username: userCreation.username });
+
+        if (user) {
+            return true;
+        }
+
+        return false;
     }
 }
