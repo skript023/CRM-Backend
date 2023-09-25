@@ -30,7 +30,7 @@ export class UsersController
     @Auth()
     async image(@Param('name') name, @Res() res: Response)
     {
-        res.sendFile(name, {root: './uploads'})
+        res.sendFile(name, {root: './assets'})
     }
 
     @Delete('avatar/delete/:name')

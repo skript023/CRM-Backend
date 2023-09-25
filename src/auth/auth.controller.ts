@@ -18,7 +18,7 @@ export class AuthController
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: 'lax',
             expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
         }).send({ message: 'Login success' });
     }

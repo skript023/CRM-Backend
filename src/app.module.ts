@@ -9,9 +9,11 @@ import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
 import { ProductsModule } from './products/products.module';
 import { AssetModule } from './asset/asset.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         ConfigModule.forRoot({
             envFilePath: '.env',
             isGlobal: true
