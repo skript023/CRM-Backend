@@ -16,7 +16,8 @@ export class UsersService
 
     async create(user: CreateUserDto, file: Express.Multer.File)
     {
-        if (this.does_user_exist(user)) throw new BadRequestException('Username or Email already used')
+        const exist = await this.does_user_exist(user);
+        if (exist) throw new BadRequestException('Username or Email already used');
 
         user.password = await bcrypt.hash(user.password, 10);
 
@@ -138,9 +139,10 @@ export class UsersService
     }
 
     private async does_user_exist(userCreation: CreateUserDto): Promise<boolean> {
-        const user = await this.userModel.findOne({ username: userCreation.username, email: userCreation.email });
+        const user = await this.userModel.find({ $or: [{ username: userCreation.username }, { email: userCreation.email }] }).exec();
 
-        if (user) {
+        if (user.length !== 0)
+        {
             return true;
         }
 
