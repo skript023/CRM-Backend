@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, NotFoundException, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, NotFoundException, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UploadedFile, Res, Redirect } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -28,10 +28,11 @@ export class UsersController
 
     @Get('avatar/:name')
     @Auth()
-    async image(@Param('name') name, @Res() res: Response)
+    async image(@Param('name') name, @Res() res : Response)
     {
         //res.sendFile(name, {root: __dirname + '/assets'})
-        res.sendFile('https://cdn.glitch.global/134e6d29-f12e-4932-87e4-2031bac5ad1d/' + name);
+
+        res.redirect(`https://cdn.glitch.global/134e6d29-f12e-4932-87e4-2031bac5ad1d/${name}`)
     }
 
     @Delete('avatar/delete/:name')
