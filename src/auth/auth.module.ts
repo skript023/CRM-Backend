@@ -16,7 +16,8 @@ import { ConfigModule } from '@nestjs/config';
             global: true,
             secret: process.env.SECRET,
             signOptions: { expiresIn: '1h' },
-    })],
+        })
+    ],
     providers: [AuthService],
     controllers: [AuthController],
     exports: [AuthService]

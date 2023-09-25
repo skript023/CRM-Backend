@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate
             );
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
-            request['user'] = payload;
+            request['user'] = JSON.parse(this.decrypt(payload.encrypted));
 
             if (!roles && !actions)
             {
@@ -93,5 +93,11 @@ export class AuthGuard implements CanActivate
         console.log(`token: ${header}`)
 
         return cookie || header
+    }
+
+    private decrypt(text: string): string | undefined
+    {
+        const key = process.env.ENCRPYPT_KEY as string
+        return Array.from(text, (c, i) => String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length))).join('');
     }
 }
