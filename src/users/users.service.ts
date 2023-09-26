@@ -64,14 +64,15 @@ export class UsersService
     async find_by_id(id: string): Promise<User>
     {
         const user = await this.userModel.findById(id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).
-            populate('role', ['name', 'level', 'access']);
+            populate('role', ['name', 'level', 'access']).
+            populate('asset', ['']);
 
         return user;
     }
 
     async login(username: string, password: string) : Promise<User>
     {
-        const user = await this.userModel.findOne({ username }, { createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access']);
+        const user = await this.userModel.findOne({ username }, { createdAt: 0, updatedAt: 0, __v: 0 });
 
         if (!user) throw new UnauthorizedException('Credential not found');
 
@@ -82,7 +83,7 @@ export class UsersService
             throw new UnauthorizedException();
         }
 
-        return (await this.userModel.findById(user._id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).populate('role', ['name', 'level', 'access'])).toJSON();
+        return this.userModel.findById(user._id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 });
     }
   
     async update(id: string, updatedData: UpdateUserDto, file: Express.Multer.File)

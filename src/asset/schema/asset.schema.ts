@@ -17,14 +17,16 @@ export class Asset
 {
     @Prop({ type: SchemaTypes.ObjectId, auto: true })
     _id: string
-    @Prop({ type: SchemaTypes.ObjectId, required: true })
+    @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
     user_id: string
-    @Prop({ type: SchemaTypes.ObjectId, required: true })
+    @Prop({ type: SchemaTypes.ObjectId, ref: 'Product' })
     product_id: string
+    @Prop({ type: SchemaTypes.ObjectId, ref: 'Payment' })
+    payment: string
     @Prop({ required: true })
     license: string
     @Prop({ required: true })
-    payment: string
+    status: string
     @Prop()
     expired: boolean
     @Prop({ type: String, required: true })
