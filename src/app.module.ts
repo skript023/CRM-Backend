@@ -20,9 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         }),
         MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ellohim.i9hc8.mongodb.net/${process.env.DB_CLUSTER}?retryWrites=true&w=majority`),
         ActivityModule,
-        UsersModule,
         AuthModule,
-        RoleModule,
         ProductsModule,
         AssetModule
     ],

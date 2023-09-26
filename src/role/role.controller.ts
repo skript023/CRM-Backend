@@ -9,11 +9,11 @@ import { Auth } from '../auth/decorator/auth.decorator';
 export class RoleController {
     constructor(private readonly roleService: RoleService) {}
 
+    @Post('add')
     @Auth({
         role: ['admin', 'staff'],
         access: 'create'
     })
-    @Post('add')
     async create(@Body() createRoleDto: CreateRoleDto) : Promise<any>
     {
         const role = await this.roleService.create(createRoleDto);
@@ -23,32 +23,32 @@ export class RoleController {
         }
     }
 
+    @Get()
     @Auth({
         role: ['admin', 'staff'],
         access: 'read'
     })
-    @Get()
     async findAll() : Promise<Role[]>
     {
         return this.roleService.findAll();
     }
 
 
+    @Get('detail/:id')
     @Auth({
         role: ['admin', 'staff'],
         access: 'read'
     })
-    @Get('detail/:id')
     async findOne(@Param('id') id: string) : Promise<Role>
     {
         return this.roleService.findOne(id);
     }
 
+    @Patch('update/:id')
     @Auth({
         role: ['admin'],
         access: 'update'
     })
-    @Patch('update/:id')
     async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) : Promise<any>
     {
         const role = await this.roleService.update(id, updateRoleDto);
@@ -58,11 +58,11 @@ export class RoleController {
         }
     }
 
+    @Delete('delete/:id')
     @Auth({
         role: ['admin', 'staff'],
         access: 'delete'
     })
-    @Delete('delete/:id')
     async remove(@Param('id') id: string) : Promise<any>
     {
         const role = await this.roleService.remove(id);

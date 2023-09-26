@@ -11,12 +11,12 @@ import { ConfigModule } from '@nestjs/config';
             envFilePath: '.env',
             isGlobal: true
         }),
-        forwardRef(() => UsersModule), 
-        JwtModule.register({
+        forwardRef(() => JwtModule.register({
             global: true,
             secret: process.env.SECRET,
-            signOptions: { expiresIn: '1h' },
-        })
+            signOptions: { expiresIn: '20s' },
+        })),
+        UsersModule, 
     ],
     providers: [AuthService],
     controllers: [AuthController],

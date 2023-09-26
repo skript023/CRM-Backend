@@ -25,7 +25,7 @@ export class ActivityController
         role: ['admin', 'staff'],
         access: 'read'
     })
-    @Get(':id')
+    @Get('detail/:id')
     async get_by_id(@Param('id') id: string): Promise<Activity>
     {
         return this.activityService.findById(id)
@@ -36,14 +36,12 @@ export class ActivityController
         return this.activityService.findById(user_id);
     }
 
-    @Auth()
     @Post('add')
     async create(@Body() body: CreateActivityDto): Promise<Activity>
     {
         return this.activityService.create(body);
     }
 
-    @Auth()
     @Patch('update/:id')
     async update(@Param('id') id: string, @Body() activity: UpdateActivityDto)
     {
@@ -54,7 +52,6 @@ export class ActivityController
         };
     }
 
-    @Auth()
     @Delete('delete/:id')
     async delete(@Param('id') id: string)
     {

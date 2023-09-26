@@ -27,7 +27,6 @@ export class UsersController
     }
 
     @Get('avatar/:name')
-    @Auth()
     async image(@Param('name') name, @Res() res : Response)
     {
         //res.sendFile(name, {root: __dirname + '/assets'})
@@ -41,11 +40,11 @@ export class UsersController
         fs.unlinkSync(`./uploads/${name}`)
     }
 
-    @Get()
     @Auth({
         role: ['admin', 'staff'],
         access: 'read'
     })
+    @Get()
     async users() : Promise<User[]> 
     {
         return this.userService.users();
@@ -84,7 +83,6 @@ export class UsersController
         return this.userService.delete(id);
     }
 
-    @Auth()
     @Get('profile')
     async getProfile(@Request() req)
     {
