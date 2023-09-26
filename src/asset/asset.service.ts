@@ -67,18 +67,30 @@ export class AssetService {
         };
     }
 
-    //running on milliseconds
-    @Interval(3600000)
-    async handleCronAssetCleaning()
+    async cleaning_asset() : Promise<void>
     {
-        const asset = await this.findAll();
-
-        asset.map((asset) =>
+        const assets = await this.findAll();
+        
+        assets.map((asset) =>
         {
+            const current_date = new Date();
+            const end_date = new Date(asset.expired_date);
+
+            if ((end_date.getTime() - current_date.getTime()) <= 0)
+            {
+                this.update(asset._id, new UpdateAssetDto({ expired: true }));
+            }
             if (asset.expired)
             {
                 this.remove(asset._id);
             }
         });
+    }
+
+    //running on milliseconds
+    @Interval(3600000)
+    async handleCronAssetCleaning()
+    {
+        await this.cleaning_asset();
     }
 }
