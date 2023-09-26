@@ -6,7 +6,7 @@ import { Interval } from '@nestjs/schedule';
 @Injectable()
 export class AuthService 
 {
-    constructor(@Inject(forwardRef(() => UsersService)) private usersService: UsersService, private jwtService: JwtService)
+    constructor(private usersService: UsersService, private jwtService: JwtService)
     {}
 
     async signIn(username : string, password : string) : Promise<any>
