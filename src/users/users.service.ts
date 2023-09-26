@@ -65,7 +65,8 @@ export class UsersService
     {
         const user = await this.userModel.findById(id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).
             populate('role', ['name', 'level', 'access']).
-            populate('asset', ['']);
+            populate('asset', ['license', 'status', 'expired', 'expired_date']).
+            populate('activity', ['name', 'start_date', 'end_date', 'status']);
 
         return user;
     }
