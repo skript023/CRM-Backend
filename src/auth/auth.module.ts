@@ -14,7 +14,7 @@ import { ConfigModule } from '@nestjs/config';
         forwardRef(() => JwtModule.register({
             global: true,
             secret: process.env.SECRET,
-            signOptions: { expiresIn: '20s' },
+            signOptions: { expiresIn: '1h' },
         })),
         UsersModule, 
     ],
