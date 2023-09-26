@@ -27,11 +27,6 @@ export class AuthService
         return this.usersService.find_by_id(id);
     }
 
-    @Interval(3600000)
-    handleCronOffline() {
-
-    }
-
     private async encrypt(text: string): Promise<string>
     {
         const key = process.env.ENCRPYPT_KEY as string

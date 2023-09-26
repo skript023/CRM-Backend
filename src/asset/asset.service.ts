@@ -5,6 +5,7 @@ import { UpdateAssetDto } from './dto/update-asset.dto';
 import { Asset } from './schema/asset.schema';
 import * as mongoose from 'mongoose'
 import { NotFoundError } from 'rxjs';
+import { Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class AssetService {
@@ -64,5 +65,20 @@ export class AssetService {
         return {
             message: `Update asset ${asset.product} successfully`
         };
+    }
+
+    //running on milliseconds
+    @Interval(3600000)
+    async handleCronAssetCleaning()
+    {
+        const asset = await this.findAll();
+
+        asset.map((asset) =>
+        {
+            if (asset.expired)
+            {
+                this.remove(asset._id);
+            }
+        });
     }
 }
