@@ -63,7 +63,7 @@ export class UsersService
 
     async find_by_id(id: string): Promise<User>
     {
-        const user = await this.userModel.findById(id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }).
+        const user = await this.userModel.findById(id, { password: 0, updatedAt: 0, __v: 0 }).
             populate('role', ['name', 'level', 'access']).
             populate('asset', ['license', 'status', 'expired', 'expired_date']).
             populate('activity', ['name', 'start_date', 'end_date', 'status']);
