@@ -95,13 +95,6 @@ export class UsersService
 
         if (file != null)
         {
-            const user = await this.userModel.findById(id);
-
-            if (user.image == file.filename)
-            {
-                fs.unlinkSync(`${file.path}/${file.filename}`);
-            }
-
             data.image = file.filename;
         }
 
