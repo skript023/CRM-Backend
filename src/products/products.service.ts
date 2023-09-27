@@ -11,9 +11,11 @@ export class ProductsService
     constructor(@InjectModel(Product.name) private productModel: mongoose.Model<Product>)
     {}
 
-    async create(createProductDto: CreateProductDto)
+    async create(product: CreateProductDto, file: Express.Multer.File)
     {
-        this.productModel.create(createProductDto);
+        product.file = file.filename;
+
+        await this.productModel.create(product);
 
         return {
             message: 'Product added successfully'
@@ -30,9 +32,14 @@ export class ProductsService
         return this.productModel.findById(id, { createdAt: 0, updatedAt: 0, __v: 0 })
     }
 
-    async update(id: string, updateProductDto: UpdateProductDto)
+    async update(id: string, data: UpdateProductDto, file: Express.Multer.File)
     {
-        const product = await this.productModel.findByIdAndUpdate(id, updateProductDto, {
+        if (file != null)
+        {
+            data.file = file.filename;
+        }
+
+        const product = await this.productModel.findByIdAndUpdate(id, data, {
             new: true, runValidators: true
         });
 
