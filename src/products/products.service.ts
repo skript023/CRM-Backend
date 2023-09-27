@@ -32,19 +32,19 @@ export class ProductsService
         return this.productModel.findById(id, { createdAt: 0, updatedAt: 0, __v: 0 })
     }
 
-    async update(id: string, data: UpdateProductDto, file: Express.Multer.File)
+    async update(id: string, product: UpdateProductDto, file: Express.Multer.File)
     {
         if (file != null)
         {
-            data.file = file.filename;
+            product.file = file.filename;
         }
 
-        const product = await this.productModel.findByIdAndUpdate(id, data, {
+        await this.productModel.findByIdAndUpdate(id, product, {
             new: true, runValidators: true
         });
 
         return {
-            message: `${product.name} updated successfully`
+            message: `Product updated successfully`
         }
     }
 

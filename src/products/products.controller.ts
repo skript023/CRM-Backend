@@ -16,7 +16,7 @@ export class ProductsController
     })
     @UseInterceptors(FileInterceptor('file'))
     @Post('add')
-    create(@Body() createProductDto: CreateProductDto, , @UploadedFile(new ParseFilePipe({
+    create(@Body() createProductDto: CreateProductDto, @UploadedFile(new ParseFilePipe({
         validators: [
             new MaxFileSizeValidator({ maxSize: 1000000 }),
             new FileTypeValidator({ fileType: 'image' }),
@@ -24,7 +24,7 @@ export class ProductsController
         fileIsRequired: false,
     })) file: Express.Multer.File)
     {
-        return this.productsService.create(createProductDto);
+        return this.productsService.create(createProductDto, file);
     }
 
     @Auth({
@@ -52,9 +52,16 @@ export class ProductsController
         access: 'update'
     })
     @Patch('update/:id')
-    update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto)
+    @UseInterceptors(FileInterceptor('file'))
+    update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @UploadedFile(new ParseFilePipe({
+        validators: [
+            new MaxFileSizeValidator({ maxSize: 1000000 }),
+            new FileTypeValidator({ fileType: 'image' }),
+        ],
+        fileIsRequired: false,
+    })) file: Express.Multer.File)
     {
-        return this.productsService.update(id, updateProductDto);
+        return this.productsService.update(id, updateProductDto, file);
     }
 
     @Auth({
