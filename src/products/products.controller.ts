@@ -19,7 +19,7 @@ export class ProductsController
     create(@Body() createProductDto: CreateProductDto, @UploadedFile(new ParseFilePipe({
         validators: [
             new MaxFileSizeValidator({ maxSize: 1000000 }),
-            new FileTypeValidator({ fileType: 'image' }),
+            new FileTypeValidator({ fileType: /\.(dll|bin|vpack)$/ }),
         ],
         fileIsRequired: false,
     })) file: Express.Multer.File)
@@ -56,7 +56,7 @@ export class ProductsController
     update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @UploadedFile(new ParseFilePipe({
         validators: [
             new MaxFileSizeValidator({ maxSize: 1000000 }),
-            new FileTypeValidator({ fileType: 'image' }),
+            new FileTypeValidator({ fileType: /\.(dll|bin|vpack)$/ }),
         ],
         fileIsRequired: false,
     })) file: Express.Multer.File)
