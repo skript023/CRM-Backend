@@ -18,7 +18,7 @@ export class ProductsController
     @Post('add')
     create(@Body() createProductDto: CreateProductDto, @UploadedFile(new ParseFilePipe({
         validators: [
-            new MaxFileSizeValidator({ maxSize: 1000000 }),
+            new MaxFileSizeValidator({ maxSize: 20000000 }),
             new FileTypeValidator({ fileType: /\.(dll|bin|vpack)$/ }),
         ],
         fileIsRequired: false,
@@ -55,7 +55,7 @@ export class ProductsController
     @UseInterceptors(FileInterceptor('file'))
     update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @UploadedFile(new ParseFilePipe({
         validators: [
-            new MaxFileSizeValidator({ maxSize: 1000000 }),
+            new MaxFileSizeValidator({ maxSize: 20000000 }),
             new FileTypeValidator({ fileType: /\.(dll|bin|vpack)$/ }),
         ],
         fileIsRequired: false,
