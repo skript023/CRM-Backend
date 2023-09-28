@@ -20,7 +20,7 @@ export class ProductsController
         validators: [
             new MaxFileSizeValidator({ maxSize: 20000000 }),
         ],
-        fileIsRequired: true,
+        fileIsRequired: false,
     })) file: Express.Multer.File)
     {
         return this.productsService.create(createProductDto, file);
@@ -56,7 +56,7 @@ export class ProductsController
         validators: [
             new MaxFileSizeValidator({ maxSize: 20000000 }),
         ],
-        fileIsRequired: true,
+        fileIsRequired: false,
     })) file: Express.Multer.File)
     {
         return this.productsService.update(id, updateProductDto, file);
