@@ -44,36 +44,39 @@ export class UsersModule implements NestModule
         consumer
         .apply(AuthMiddleware)
         .forRoutes(
-            { path: 'user', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'user/detail/:id', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'user/update/:id', method: RequestMethod.PATCH }, // Apply to findAll
-            { path: 'user/avatar/:name', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'user/profile', method: RequestMethod.GET }, // Apply to create
-            { path: 'user/delete/:id', method: RequestMethod.DELETE }, // Apply to remove
+            { path: 'auth/profile', method: RequestMethod.GET },
+            { path: 'auth/logout', method: RequestMethod.GET },
 
-            { path: 'role', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'role/add', method: RequestMethod.POST }, // Apply to create
-            { path: 'role/detail/:id', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'role/update/:id', method: RequestMethod.PATCH }, // Apply to findAll
-            { path: 'role/delete/:id', method: RequestMethod.DELETE }, // Apply to remove
+            { path: 'user', method: RequestMethod.GET },
+            { path: 'user/detail/:id', method: RequestMethod.GET }, 
+            { path: 'user/update/:id', method: RequestMethod.PATCH },
+            { path: 'user/avatar/:name', method: RequestMethod.GET }, 
+            { path: 'user/profile', method: RequestMethod.GET },
+            { path: 'user/delete/:id', method: RequestMethod.DELETE }, 
 
-            { path: 'activity', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'activity/add', method: RequestMethod.POST }, // Apply to create
-            { path: 'activity/detail/:id', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'activity/update/:id', method: RequestMethod.PATCH }, // Apply to findAll
-            { path: 'activity/delete/:id', method: RequestMethod.DELETE }, // Apply to remove
+            { path: 'role', method: RequestMethod.GET }, 
+            { path: 'role/add', method: RequestMethod.POST }, 
+            { path: 'role/detail/:id', method: RequestMethod.GET },
+            { path: 'role/update/:id', method: RequestMethod.PATCH }, 
+            { path: 'role/delete/:id', method: RequestMethod.DELETE },
 
-            { path: 'asset', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'asset/add', method: RequestMethod.POST }, // Apply to create
-            { path: 'asset/detail/:id', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'asset/update/:id', method: RequestMethod.PATCH }, // Apply to findAll
-            { path: 'asset/delete/:id', method: RequestMethod.DELETE }, // Apply to remove
+            { path: 'activity', method: RequestMethod.GET },
+            { path: 'activity/add', method: RequestMethod.POST },
+            { path: 'activity/detail/:id', method: RequestMethod.GET },
+            { path: 'activity/update/:id', method: RequestMethod.PATCH },
+            { path: 'activity/delete/:id', method: RequestMethod.DELETE },
+
+            { path: 'asset', method: RequestMethod.GET },
+            { path: 'asset/add', method: RequestMethod.POST },
+            { path: 'asset/detail/:id', method: RequestMethod.GET },
+            { path: 'asset/update/:id', method: RequestMethod.PATCH },
+            { path: 'asset/delete/:id', method: RequestMethod.DELETE },
             
-            { path: 'products', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'products/add', method: RequestMethod.POST }, // Apply to create
-            { path: 'products/detail/:id', method: RequestMethod.GET }, // Apply to findAll
-            { path: 'products/update/:id', method: RequestMethod.PATCH }, // Apply to findAll
-            { path: 'products/delete/:id', method: RequestMethod.DELETE }, // Apply to remove
+            { path: 'products', method: RequestMethod.GET },
+            { path: 'products/add', method: RequestMethod.POST },
+            { path: 'products/detail/:id', method: RequestMethod.GET },
+            { path: 'products/update/:id', method: RequestMethod.PATCH },
+            { path: 'products/delete/:id', method: RequestMethod.DELETE },
             
         );
     }

@@ -21,7 +21,7 @@ export class ProductsController
             new MaxFileSizeValidator({ maxSize: 20000000 }),
             new FileTypeValidator({ fileType: /\.(dll|bin|vpack)$/ }),
         ],
-        fileIsRequired: false,
+        fileIsRequired: true,
     })) file: Express.Multer.File)
     {
         return this.productsService.create(createProductDto, file);
@@ -58,7 +58,7 @@ export class ProductsController
             new MaxFileSizeValidator({ maxSize: 20000000 }),
             new FileTypeValidator({ fileType: /\.(dll|bin|vpack)$/ }),
         ],
-        fileIsRequired: false,
+        fileIsRequired: true,
     })) file: Express.Multer.File)
     {
         return this.productsService.update(id, updateProductDto, file);

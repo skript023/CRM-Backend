@@ -23,14 +23,12 @@ export class AuthController
         }).send({ message: 'Login success' });
     }
 
-    @UseGuards(AuthGuard)
     @Get('profile')
     async getProfile(@Request() req): Promise<any>
     {
         return req.user;
     }
 
-    @UseGuards(AuthGuard)
     @Get('logout')
     async logout(@Res({ passthrough: true }) res: Response)
     {

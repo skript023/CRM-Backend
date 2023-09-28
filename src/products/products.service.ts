@@ -13,7 +13,8 @@ export class ProductsService
 
     async create(product: CreateProductDto, file: Express.Multer.File)
     {
-        product.file = file.filename;
+        console.log(file)
+        product.file = file?.filename;
 
         await this.productModel.create(product);
 

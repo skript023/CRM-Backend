@@ -19,7 +19,7 @@ export class Product
     @Prop({ type: mongoose.SchemaTypes.ObjectId, auto: true })
     _id: string
 
-    @Prop({ required: true })
+    @Prop({ defaul: 0 })
     code: number
 
     @Prop({ required: true })
@@ -37,10 +37,10 @@ export class Product
     @Prop({ required: true })
     file: string
 
-    @Prop()
+    @Prop({ default: '1.0' })
     version: string
 
-    @Prop()
+    @Prop({ default: 'unsupported' })
     status: string
 }
 
