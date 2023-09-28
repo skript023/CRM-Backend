@@ -36,6 +36,6 @@ export class AuthController
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-        }).send({ message: 'Logout success' }).end();
+        }).send({ message: 'Logout success' });
     }
 }
