@@ -77,7 +77,6 @@ export class UsersModule implements NestModule
             { path: 'products/detail/:id', method: RequestMethod.GET },
             { path: 'products/update/:id', method: RequestMethod.PATCH },
             { path: 'products/delete/:id', method: RequestMethod.DELETE },
-            
         );
     }
 }
