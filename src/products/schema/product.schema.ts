@@ -34,7 +34,7 @@ export class Product
     @Prop({ required: true })
     target: string
 
-    @Prop({ required: true })
+    @Prop({ default: null })
     file: string
 
     @Prop({ default: '1.0' })
