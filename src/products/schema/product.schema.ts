@@ -40,7 +40,7 @@ export class Product
     @Prop({ default: '1.0' })
     version: string
 
-    @Prop({ default: 'unsupported' })
+    @Prop({ default: 'Unsupported' })
     status: string
 }
 
