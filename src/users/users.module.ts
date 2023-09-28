@@ -14,7 +14,7 @@ import { AuthService } from '../auth/auth.service';
         MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
         MulterModule.register({
             storage: diskStorage({
-                destination: __dirname + '/assets',
+                destination: __dirname + '/assets/upload',
                 filename: (req, file, cb) => {
                     const name = file.originalname.split('.')[0];
                     const extension = file.originalname.split('.')[1];

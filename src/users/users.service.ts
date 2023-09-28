@@ -84,6 +84,10 @@ export class UsersService
             throw new UnauthorizedException();
         }
 
+        user.recent_login = new Date().toString();
+
+        user.save();
+
         return this.userModel.findById(user._id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 });
     }
   

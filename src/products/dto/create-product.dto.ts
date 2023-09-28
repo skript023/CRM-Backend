@@ -13,7 +13,6 @@ export class CreateProductDto
     readonly game: string
     @IsNotEmpty()
     readonly target: string
-    @IsNotEmpty()
     file: string
     readonly version: string
     readonly status: string

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -13,7 +13,8 @@ export class ProductsService
 
     async create(product: CreateProductDto, file: Express.Multer.File)
     {
-        console.log(file)
+        if (!file) throw new BadRequestException('File is empty, please add file!');
+
         product.file = file?.filename;
 
         await this.productModel.create(product);
