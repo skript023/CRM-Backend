@@ -4,7 +4,9 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './schema/product.schema';
 import * as mongoose from 'mongoose';
-import * as fs from 'fs'
+
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class ProductsService
@@ -57,11 +59,11 @@ export class ProductsService
 
         if (!product) throw new NotFoundException('Unable to delete non-existed user');
 
-        const path = `${__dirname}/assets/binaries/${product.name}`;
+        const file = path.join(`${__dirname}/assets/binaries/`, product.file);
 
-        if (fs.existsSync(path))
+        if (fs.existsSync(file))
         {
-            fs.unlinkSync(path);
+            fs.unlinkSync(file);
         }
 
         return {

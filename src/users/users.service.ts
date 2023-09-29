@@ -6,7 +6,9 @@ import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RoleService } from '../role/role.service';
-import * as fs from 'fs'
+
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class UsersService 
@@ -128,15 +130,15 @@ export class UsersService
     {
         const user = await this.userModel.findByIdAndDelete(id, {
             select: ['fullname']
-        })
+        }) as User
 
         if (!user) throw new NotFoundException('User not found.');
 
-        const path = `${__dirname}/assets/binaries/${user.image}`;
+        const file = path.join(`${__dirname}/assets/binaries/${user.image}`, user.image);
 
-        if (fs.existsSync(path))
+        if (fs.existsSync(file))
         {
-            fs.unlinkSync(path);
+            fs.unlinkSync(file);
         }
 
         return {
