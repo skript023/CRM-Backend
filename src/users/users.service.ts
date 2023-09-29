@@ -8,7 +8,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { RoleService } from '../role/role.service';
 
 import * as fs from 'fs';
-import * as path from 'path';
 
 @Injectable()
 export class UsersService 
@@ -134,11 +133,11 @@ export class UsersService
 
         if (!user) throw new NotFoundException('User not found.');
 
-        const file = path.join(`${__dirname}/assets/binaries/`, user.image);
+        const path = `${__dirname}/assets/binaries/${user.image}`;
 
-        if (fs.existsSync(file))
+        if (fs.existsSync(path))
         {
-            fs.unlinkSync(file);
+            fs.unlinkSync(path);
         }
 
         return {
