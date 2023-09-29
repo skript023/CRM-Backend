@@ -134,7 +134,7 @@ export class UsersService
 
         if (!user) throw new NotFoundException('User not found.');
 
-        const file = path.join(`${__dirname}/assets/binaries/${user.image}`, user.image);
+        const file = path.join(`${__dirname}/assets/binaries/`, user.image);
 
         if (fs.existsSync(file))
         {
