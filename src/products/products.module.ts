@@ -19,14 +19,15 @@ import * as path from 'path';
                 filename: (req, file, callback) => {
                     const name = file.originalname.split('.')[0];
                     const extension = file.originalname.split('.')[1];
-                    const filename = `${name}_${Date.now()}.${extension}`
+                    const filename = `${name}_${Date.now()}.${extension}`;
 
                     callback(null, filename)
                 }
             }),
             fileFilter: (req, file, callback) => {
-                if (!file.originalname.match(/\.(dll|bin|vpack)$/)) {
-                    return callback(null, false)
+                if (!file.originalname.match(/\.(dll|bin|vpack)$/))
+                {
+                    return callback(null, false);
                 }
 
                 if (fs.existsSync(path.join(`${__dirname}/assets/binaries`, file.originalname)))

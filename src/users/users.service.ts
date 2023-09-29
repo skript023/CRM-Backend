@@ -126,14 +126,21 @@ export class UsersService
 
     async delete(id: string) : Promise<any>
     {
-        const res = await this.userModel.findByIdAndDelete(id, {
+        const user = await this.userModel.findByIdAndDelete(id, {
             select: ['fullname']
         })
 
-        if (!res) throw new NotFoundException('User not found.')
+        if (!user) throw new NotFoundException('User not found.');
+
+        const path = `${__dirname}/assets/binaries/${user.image}`;
+
+        if (fs.existsSync(path))
+        {
+            fs.unlinkSync(path);
+        }
 
         return {
-            message: `Success delete ${res.fullname} data`
+            message: `Success delete ${user.fullname} data`
         }
     }
 

@@ -29,15 +29,13 @@ export class UsersController
     @Get('avatar/:name')
     async image(@Param('name') name, @Res() res : Response)
     {
-        //res.sendFile(name, {root: __dirname + '/assets'})
-
-        res.redirect(`https://cdn.glitch.global/134e6d29-f12e-4932-87e4-2031bac5ad1d/${name}`)
+        res.sendFile(name, { root: `${__dirname}/assets/avatar/` });
     }
 
     @Delete('avatar/delete/:name')
     async delete_image(@Param('name') name)
     {
-        fs.unlinkSync(`./uploads/${name}`)
+        fs.unlinkSync(`${__dirname}/assets/avatar/${name}`);
     }
 
     @Auth({

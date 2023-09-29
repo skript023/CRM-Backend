@@ -1,4 +1,4 @@
-import { forwardRef, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { forwardRef, MiddlewareConsumer, Module, NestModule, NotAcceptableException, RequestMethod } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,7 +14,7 @@ import { AuthService } from '../auth/auth.service';
         MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
         MulterModule.register({
             storage: diskStorage({
-                destination: __dirname + '/assets/upload',
+                destination: __dirname + '/assets/avatar',
                 filename: (req, file, cb) => {
                     const name = file.originalname.split('.')[0];
                     const extension = file.originalname.split('.')[1];
@@ -23,12 +23,13 @@ import { AuthService } from '../auth/auth.service';
                     cb(null, filename)
                 }
             }),
-            fileFilter: (req, file, cb) => {
-                if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-                    return cb(null, false)
+            fileFilter: (req, file, callback) => {
+                if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+                {
+                    return callback(null, false)
                 }
 
-                cb(null, true)
+                callback(null, true)
             }
         }),
         RoleModule,

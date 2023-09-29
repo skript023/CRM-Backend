@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './schema/product.schema';
+import * as mongoose from 'mongoose';
+import * as fs from 'fs'
 
 @Injectable()
 export class ProductsService
@@ -53,6 +54,15 @@ export class ProductsService
     async remove(id: string)
     {
         const product = await this.productModel.findByIdAndDelete(id);
+
+        if (!product) throw new NotFoundException('Unable to delete non-existed user');
+
+        const path = `${__dirname}/assets/binaries/${product.name}`;
+
+        if (fs.existsSync(path))
+        {
+            fs.unlinkSync(path);
+        }
 
         return {
             message: `${product.name} deleted successfully`
