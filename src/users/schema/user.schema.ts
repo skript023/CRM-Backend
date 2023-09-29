@@ -41,10 +41,10 @@ export class User
     @Prop({ type: String, default: null })
     image: string
 
-    @Prop({ type: String, default: new Date().setHours(0, 0, 0, 0).toString() })
+    @Prop({ type: String, default: new Date().toString() })
     expired: string
 
-    @Prop({ type: String, default: Date.now().toString() })
+    @Prop({ type: String, default: new Date().toString() })
     recent_login: string
 
     @Prop({ type: String, default: null })
