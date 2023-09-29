@@ -41,7 +41,7 @@ export class UsersService
 
         try
         {
-            this.userModel.create(user);
+            await this.userModel.create(user);
         }
         catch
         {
@@ -49,7 +49,8 @@ export class UsersService
         }
 
         return {
-            message: 'Account creation success'
+            message: 'Account creation success',
+            success: true
         };
     }
 
@@ -92,36 +93,27 @@ export class UsersService
         return this.userModel.findById(user._id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 });
     }
   
-    async update(id: string, updatedData: UpdateUserDto, file: Express.Multer.File)
+    async update(id: string, user: UpdateUserDto, file: Express.Multer.File)
     {
-        let data: any = {};
-
-        if (!updatedData) throw new BadRequestException('Invalid param exception');
-
         if (file != null)
         {
-            data.image = file.filename;
+            user.image = file.filename;
         }
 
-        if (updatedData.password != null)
+        if (user.password != null)
         {
-            data.password = await bcrypt.hash(updatedData.password, 10);
+            user.password = await bcrypt.hash(user.password, 10);
         }
 
-        data.fullname = updatedData.fullname;
-        data.username = updatedData.username;
-        data.email = updatedData.email;
-        data.hardware_id = updatedData.hardware_id;
-        data.computer_name = updatedData.computer_name;
-
-        const res = await this.userModel.findByIdAndUpdate(id, data, {
+        const result = await this.userModel.findByIdAndUpdate(id, user, {
             new: true, runValidators: true, select: ['fullname']
         });
 
-        if (!res) throw new NotFoundException('User not found.')
+        if (!result) throw new NotFoundException('User not found.')
 
         return {
-            message: `Success update ${res.fullname} data`
+            message: `Success update ${result.fullname} data`,
+            success: true
         };
     }
 
@@ -141,7 +133,8 @@ export class UsersService
         }
 
         return {
-            message: `Success delete ${user.fullname} data`
+            message: `Success delete ${user.fullname} data`,
+            success: true
         }
     }
 

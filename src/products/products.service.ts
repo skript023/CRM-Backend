@@ -22,7 +22,8 @@ export class ProductsService
         await this.productModel.create(product);
 
         return {
-            message: 'Product added successfully'
+            message: 'Product added successfully',
+            success: true
         } 
     }
 
@@ -48,7 +49,8 @@ export class ProductsService
         });
 
         return {
-            message: `Product updated successfully`
+            message: `Product updated successfully`,
+            success: true
         }
     }
 
@@ -66,7 +68,8 @@ export class ProductsService
         }
 
         return {
-            message: `${product.name} deleted successfully`
+            message: `${product.name} deleted successfully`,
+            success: true
         }
     }
 }

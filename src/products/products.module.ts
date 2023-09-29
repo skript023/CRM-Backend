@@ -8,7 +8,6 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
 import * as fs from 'fs';
-import * as path from 'path';   
 
 @Module({
     imports: [
@@ -30,7 +29,7 @@ import * as path from 'path';
                     return callback(null, false);
                 }
 
-                if (fs.existsSync(path.join(`${__dirname}/assets/binaries`, file.originalname)))
+                if (fs.existsSync(`${__dirname}/assets/binaries/${file.originalname}`))
                 {
                     const exception = new NotAcceptableException(`File ${file.originalname} is already uploaded!`, `File ${file.originalname} is already uploaded!`);
                     callback(exception, false);
@@ -48,3 +47,5 @@ import * as path from 'path';
     providers: [ProductsService],
 })
 export class ProductsModule {}
+
+//.join(`${__dirname}/assets/binaries`, file.originalname)
