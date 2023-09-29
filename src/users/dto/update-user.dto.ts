@@ -1,5 +1,5 @@
 import { IsEmail, IsString, MaxLength, MinLength, ValidateIf } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { User } from '../schema/user.schema';
 
 export class UpdateUserDto
 {
@@ -15,7 +15,7 @@ export class UpdateUserDto
     @IsString()
     @IsEmail()
     readonly email: string
-    @ValidateIf(param => param.password != null)
+    @ValidateIf((param: User) => { return param.password != null || param.password.length > 0 })
     @IsString()
     @MinLength(8)
     password: string
