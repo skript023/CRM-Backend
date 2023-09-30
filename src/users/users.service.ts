@@ -5,39 +5,29 @@ import * as bcrypt from 'bcrypt'
 import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RoleService } from '../role/role.service';
 
 import * as fs from 'fs';
 
 @Injectable()
 export class UsersService 
 {
-    constructor(@InjectModel(User.name) private userModel: mongoose.Model<User>, private roleService: RoleService)
+    constructor(@InjectModel(User.name) private userModel: mongoose.Model<User>)
     {}
 
     async create(user: CreateUserDto, file: Express.Multer.File)
     {
         const exist = await this.does_user_exist(user);
+
         if (exist) throw new BadRequestException('Username or Email already used');
 
         user.password = await bcrypt.hash(user.password, 10);
 
-        if (user.role_id)
-        {
-            const role = await this.roleService.find_by_name(user.role_id);
-
-            if (!role) throw new NotFoundException('Create user failed, role not found, try an existing role');
-
-            user.role_id = role._id;
-        }
-        else
+        if (user.role_id?.length <= 0)
         {
             user.role_id = '65042e34aca29db82fe65944';
         }
 
         user.image = file.filename;
-
-        console.log(user)
 
         try
         {

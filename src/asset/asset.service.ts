@@ -59,7 +59,9 @@ export class AssetService {
 
     async remove(id: string)
     {
-        const asset = await this.assetModel.findByIdAndDelete(id) as any;
+        const asset = await this.assetModel.findByIdAndDelete(id).
+            populate('product', ['name', 'game', 'target', 'file']).
+            populate('user', ['fullname', 'username']) as any;
 
         if (!asset) throw new NotFoundException('Delete asset failed');
 
