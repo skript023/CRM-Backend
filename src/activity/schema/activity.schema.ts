@@ -15,8 +15,8 @@ import { now } from "mongoose";
 
 export class Activity
 {
-    @Prop({ auto: true })
-    _id: mongoose.Schema.Types.ObjectId
+    @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+    _id: string
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     user_id: string
