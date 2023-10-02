@@ -26,6 +26,9 @@ export class Product
     name: string
 
     @Prop({ required: true })
+    price: number
+
+    @Prop({ required: true })
     grade: ProductGrade
 
     @Prop({ required: true })
