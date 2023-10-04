@@ -22,12 +22,12 @@ export class Asset
     @Prop({ type: SchemaTypes.ObjectId, ref: 'Product' })
     product_id: string
     @Prop({ type: SchemaTypes.ObjectId, ref: 'Payment' })
-    payment: string
+    payment_id: string
     @Prop({ required: true })
     license: string
-    @Prop({ required: true })
+    @Prop({ default: 'Inactive' })
     status: string
-    @Prop()
+    @Prop({ default: false })
     expired: boolean
     @Prop({ type: String, required: true })
     expired_date: string
@@ -48,3 +48,10 @@ AssetSchema.virtual('product_detail', {
     foreignField: '_id',
     justOne: true
 });
+
+AssetSchema.virtual('payment', {
+    ref: 'Payment',
+    localField: 'payment_id',
+    foreignField: '_id',
+    justOne: true
+})

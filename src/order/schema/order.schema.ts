@@ -20,6 +20,9 @@ export class Order
     @Prop({ type:SchemaTypes.ObjectId, auto: true })
     product_id: string
 
+    @Prop({ type: SchemaTypes.ObjectId, auto: true })
+    user_id: string
+
     @Prop({ required: true })
     quantity: number
 
@@ -32,5 +35,13 @@ export const OrderSchema = SchemaFactory.createForClass(Order);
 OrderSchema.virtual('product', {
     ref: 'Product',
     localField: 'product_id',
-    foreignField: '_id'
+    foreignField: '_id',
+    justOne: true
+})
+
+OrderSchema.virtual('user', {
+    ref: 'User',
+    localField: 'user_id',
+    foreignField: '_id',
+    justOne: true
 })

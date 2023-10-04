@@ -1,12 +1,15 @@
 import { IsNotEmpty } from "class-validator"
-import { ProductGrade } from "../../products/enum/product.enum"
 
 export class CreateAssetDto
 {
-    @IsNotEmpty()
+    _id: string
     user_id: string
+    product_id: string
+    payment_id: string
     @IsNotEmpty()
-    name: string
+    license: string
+    status: string
+    expired: boolean
     @IsNotEmpty()
-    grade: ProductGrade
+    expired_date: string
 }

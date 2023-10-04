@@ -1,4 +1,4 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { SchemaTypes } from "mongoose";
 
 @Schema({
@@ -22,3 +22,5 @@ export class Payment
     @Prop({ default: 'Pending' })
     status: string
 }
+
+export const PaymentSchema = SchemaFactory.createForClass(Payment);
