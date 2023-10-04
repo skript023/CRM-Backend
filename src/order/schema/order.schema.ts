@@ -1,4 +1,4 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { SchemaTypes } from "mongoose";
 
 @Schema({
@@ -26,3 +26,11 @@ export class Order
     @Prop({ default: 'Open' })
     status: string
 }
+
+export const OrderSchema = SchemaFactory.createForClass(Order);
+
+OrderSchema.virtual('product', {
+    ref: 'Product',
+    localField: 'product_id',
+    foreignField: '_id'
+})
