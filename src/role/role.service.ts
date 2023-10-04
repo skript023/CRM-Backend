@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './schema/role.schema';
@@ -11,9 +11,21 @@ export class RoleService
     constructor(@InjectModel(Role.name) private roleModel: mongoose.Model<Role>)
     {}
 
-    async create(createRoleDto: CreateRoleDto) : Promise<Role>
+    async create(createRoleDto: CreateRoleDto) : Promise<any>
     {
-        return this.roleModel.create(createRoleDto)
+        try
+        {
+            await this.roleModel.create(createRoleDto);
+        }
+        catch
+        {
+            throw new InternalServerErrorException()
+        }
+
+        return {
+            message: 'Register success, redirected to login page',
+            success: true
+        }
     }
 
     async findAll() : Promise<Role[]>
@@ -31,7 +43,7 @@ export class RoleService
         return this.roleModel.findOne({name})
     }
 
-    async update(id: string, updateRoleDto: UpdateRoleDto) : Promise<Role>
+    async update(id: string, updateRoleDto: UpdateRoleDto) : Promise<any>
     {
         const role = await this.roleModel.findByIdAndUpdate(id, updateRoleDto, {
             new: true, runValidators: true
@@ -39,15 +51,21 @@ export class RoleService
 
         if (!role) throw new NotFoundException()
 
-        return role
+        return {
+            message: `Role ${role.name} successfully updated`,
+            success: true
+        }
     }
 
-    async remove(id: string) : Promise<Role>
+    async remove(id: string) : Promise<any>
     {
         const role = await this.roleModel.findByIdAndDelete(id)
 
         if (!role) throw new NotFoundException()
 
-        return role 
+        return {
+            message: `Role ${role.name} successfully deleted`,
+            success: true
+        } 
     }
 }

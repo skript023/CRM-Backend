@@ -19,11 +19,14 @@ export class Product
     @Prop({ type: mongoose.SchemaTypes.ObjectId, auto: true })
     _id: string
 
-    @Prop({ required: true })
+    @Prop({ defaul: 0 })
     code: number
 
     @Prop({ required: true })
     name: string
+
+    @Prop({ required: true })
+    price: number
 
     @Prop({ required: true })
     grade: ProductGrade
@@ -34,13 +37,13 @@ export class Product
     @Prop({ required: true })
     target: string
 
-    @Prop({ required: true })
+    @Prop({ default: null })
     file: string
 
-    @Prop()
+    @Prop({ default: '1.0' })
     version: string
 
-    @Prop()
+    @Prop({ default: 'Unsupported' })
     status: string
 }
 

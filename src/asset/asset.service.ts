@@ -4,7 +4,6 @@ import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
 import { Asset } from './schema/asset.schema';
 import * as mongoose from 'mongoose'
-import { NotFoundError } from 'rxjs';
 import { Interval } from '@nestjs/schedule';
 
 @Injectable()
@@ -17,7 +16,8 @@ export class AssetService {
         const asset = await this.assetModel.create(createAssetDto);
 
         return {
-            message: `Asset ${asset["product"]} created successfully`
+            message: `Asset ${asset["product"]} created successfully`,
+            success: true
         }
     }
 
@@ -36,7 +36,7 @@ export class AssetService {
             populate('product', ['name', 'game', 'target', 'file']).
             populate('user', ['fullname', 'username']);
 
-        if ((await asset).expired) throw new UnauthorizedException()
+        if ((await asset).expired) throw new UnauthorizedException();
 
         asset.projection({ expired: 0, createdAt: 0, updatedAt: 0, __v: 0 })
 
@@ -49,21 +49,25 @@ export class AssetService {
             new: true, runValidators: true
         }) as any;
 
-        if (!asset) throw new NotFoundException('Update asset failed')
+        if (!asset) throw new NotFoundException('Update asset failed');
 
         return {
-            message: `Update asset ${asset.product} successfully`
+            message: `Update asset ${asset.product} successfully`,
+            success: true
         };
     }
 
     async remove(id: string)
     {
-        const asset = await this.assetModel.findByIdAndDelete(id) as any;
+        const asset = await this.assetModel.findByIdAndDelete(id).
+            populate('product', ['name', 'game', 'target', 'file']).
+            populate('user', ['fullname', 'username']) as any;
 
-        if (!asset) throw new NotFoundException('Delete asset failed')
+        if (!asset) throw new NotFoundException('Delete asset failed');
 
         return {
-            message: `Update asset ${asset.product} successfully`
+            message: `Update asset ${asset.product} successfully`,
+            success: true
         };
     }
 

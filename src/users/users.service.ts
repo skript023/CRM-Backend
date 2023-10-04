@@ -5,42 +5,33 @@ import * as bcrypt from 'bcrypt'
 import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RoleService } from '../role/role.service';
-import * as fs from 'fs'
+
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersService 
 {
-    constructor(@InjectModel(User.name) private userModel: mongoose.Model<User>, private roleService: RoleService)
+    constructor(@InjectModel(User.name) private userModel: mongoose.Model<User>)
     {}
 
     async create(user: CreateUserDto, file: Express.Multer.File)
     {
         const exist = await this.does_user_exist(user);
+
         if (exist) throw new BadRequestException('Username or Email already used');
 
         user.password = await bcrypt.hash(user.password, 10);
 
-        if (user.role_id)
-        {
-            const role = await this.roleService.find_by_name(user.role_id);
-
-            if (!role) throw new NotFoundException('Create user failed, role not found, try an existing role');
-
-            user.role_id = role._id;
-        }
-        else
+        if (user.role_id?.length <= 0)
         {
             user.role_id = '65042e34aca29db82fe65944';
         }
 
         user.image = file.filename;
 
-        console.log(user)
-
         try
         {
-            this.userModel.create(user);
+            await this.userModel.create(user);
         }
         catch
         {
@@ -48,7 +39,8 @@ export class UsersService
         }
 
         return {
-            message: 'Account creation success'
+            message: 'Account creation success',
+            success: true
         };
     }
 
@@ -84,59 +76,55 @@ export class UsersService
             throw new UnauthorizedException();
         }
 
+        user.recent_login = new Date().toString();
+
+        user.save();
+
         return this.userModel.findById(user._id, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 });
     }
   
-    async update(id: string, updatedData: UpdateUserDto, file: Express.Multer.File)
+    async update(id: string, user: UpdateUserDto, file: Express.Multer.File)
     {
-        let data: any = {};
-
-        if (!updatedData) throw new BadRequestException('Invalid param exception');
-
         if (file != null)
         {
-            const user = await this.userModel.findById(id);
-
-            if (user.image == file.filename)
-            {
-                fs.unlinkSync(`${file.path}/${file.filename}`);
-            }
-
-            data.image = file.filename;
+            user.image = file.filename;
         }
 
-        if (updatedData.password != null)
+        if (user.password != null)
         {
-            data.password = await bcrypt.hash(updatedData.password, 10);
+            user.password = await bcrypt.hash(user.password, 10);
         }
 
-        data.fullname = updatedData.fullname;
-        data.username = updatedData.username;
-        data.email = updatedData.email;
-        data.hardware_id = updatedData.hardware_id;
-        data.computer_name = updatedData.computer_name;
-
-        const res = await this.userModel.findByIdAndUpdate(id, data, {
+        const result = await this.userModel.findByIdAndUpdate(id, user, {
             new: true, runValidators: true, select: ['fullname']
         });
 
-        if (!res) throw new NotFoundException('User not found.')
+        if (!result) throw new NotFoundException('User not found.')
 
         return {
-            message: `Success update ${res.fullname} data`
+            message: `Success update ${result.fullname} data`,
+            success: true
         };
     }
 
     async delete(id: string) : Promise<any>
     {
-        const res = await this.userModel.findByIdAndDelete(id, {
+        const user = await this.userModel.findByIdAndDelete(id, {
             select: ['fullname']
-        })
+        }) as User
 
-        if (!res) throw new NotFoundException('User not found.')
+        if (!user) throw new NotFoundException('User not found.');
+
+        const path = `${__dirname}/assets/binaries/${user.image}`;
+
+        if (fs.existsSync(path))
+        {
+            fs.unlinkSync(path);
+        }
 
         return {
-            message: `Success delete ${res.fullname} data`
+            message: `Success delete ${user.fullname} data`,
+            success: true
         }
     }
 

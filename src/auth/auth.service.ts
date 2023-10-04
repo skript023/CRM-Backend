@@ -1,7 +1,6 @@
 import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
-import { Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class AuthService 
