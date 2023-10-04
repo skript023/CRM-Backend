@@ -7,6 +7,8 @@ import * as mongoose from 'mongoose'
 import { Asset } from 'src/asset/schema/asset.schema';
 import { Interval } from '@nestjs/schedule';
 import { Payment } from 'src/payment/schema/payment.schema';
+import { Request } from 'express';
+const stripe = require('stripe')('pk_test_51NxLMSIkxZUSFLxVr4Ca1qzd9pGH43CkDw8wWkCnY2OGiN1FCQV3fa7AbG3WjXpnVCdzDYbvvRE68p2e676DMRyT00Jw69x0Zl');
 
 @Injectable()
 export class OrderService 
@@ -16,13 +18,26 @@ export class OrderService
 		@InjectModel(Asset.name) private assetModel: mongoose.Model<Asset>,
 		@InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>
 	)
-    {}
+    {
+	}
 
-	async create(orderData: CreateOrderDto) 
+	async create(orderData: CreateOrderDto, req: Request) 
 	{
 		try 
 		{
-			await this.orderModel.create(orderData);
+			const order = await (await this.orderModel.create(orderData)).
+			populate('product', ['name', 'price']);
+			
+			stripe.session.checkout.create({
+				line_items: [
+					{
+						product: order.product_id
+					}
+				],
+				mode: 'payment',
+				success_url: `${req.protocol}://${req.get('host')}/order/create`,
+				cancel_url: `${req.protocol}://${req.get('host')}/order/failed`,
+			})
 		} 
 		catch (error : any) 
 		{
