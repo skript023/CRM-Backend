@@ -10,6 +10,8 @@ import { RoleModule } from './role/role.module';
 import { ProductsModule } from './products/products.module';
 import { AssetModule } from './asset/asset.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
     imports: [
@@ -22,7 +24,9 @@ import { ScheduleModule } from '@nestjs/schedule';
         ActivityModule,
         AuthModule,
         ProductsModule,
-        AssetModule
+        AssetModule,
+        OrderModule,
+        PaymentModule
     ],
     controllers: [AppController],
     providers: [AppService],
