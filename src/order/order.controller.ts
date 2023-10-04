@@ -20,19 +20,19 @@ export class OrderController
 		return this.orderService.findAll();
 	}
 
-	@Get(':id')
+	@Get('detail/:id')
 	async findOne(@Param('id') id: string) 
 	{
 		return this.orderService.findOne(id);
 	}
 
-	@Patch(':id')
+	@Patch('update/:id')
 	async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) 
 	{
 		return this.orderService.update(id, updateOrderDto);
 	}
 
-	@Delete(':id')
+	@Delete('delete/:id')
 	async remove(@Param('id') id: string) 
 	{
 		return this.orderService.remove(id);
