@@ -8,7 +8,7 @@ import { Asset } from 'src/asset/schema/asset.schema';
 import { Interval } from '@nestjs/schedule';
 import { Payment } from 'src/payment/schema/payment.schema';
 import { Request } from 'express';
-const stripe = require('stripe')('pk_test_51NxLMSIkxZUSFLxVr4Ca1qzd9pGH43CkDw8wWkCnY2OGiN1FCQV3fa7AbG3WjXpnVCdzDYbvvRE68p2e676DMRyT00Jw69x0Zl');
+const midtrans = require('midtrans-client');
 
 @Injectable()
 export class OrderService 
@@ -18,26 +18,43 @@ export class OrderService
 		@InjectModel(Asset.name) private assetModel: mongoose.Model<Asset>,
 		@InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>
 	)
-    {
-	}
+    {}
 
 	async create(orderData: CreateOrderDto, req: Request) 
 	{
 		try 
 		{
-			const order = await (await this.orderModel.create(orderData)).
-			populate('product', ['name', 'price']);
-			
-			stripe.session.checkout.create({
-				line_items: [
-					{
-						product: order.product_id
-					}
-				],
-				mode: 'payment',
-				success_url: `${req.protocol}://${req.get('host')}/order/create`,
-				cancel_url: `${req.protocol}://${req.get('host')}/order/failed`,
-			})
+			const doc = await this.orderModel.create(orderData);
+			const order = await (await doc.populate('user', ['fullname', 'email', 'username'])).populate('product', ['name', ['price']]) as any;
+
+			let snap = new midtrans.Snap({
+				// Set to true if you want Production Environment (accept real transaction).
+				isProduction: false,
+				serverKey: process.env.SERVER_KEY
+			});
+
+			let parameter = {
+				"transaction_details": {
+					"order_id": order._id,
+					"gross_amount": order.product.price
+				},
+				"credit_card": {
+					"secure": true
+				},
+				"customer_details": {
+					"fullname": order.user.fullname,
+					"username": order.user.username,
+					"email": order.user.email
+				}
+			};
+
+			snap.createTransaction(parameter)
+				.then((transaction) => {
+					// transaction token
+					this.transaction_token = transaction.token;
+				});
+
+			return this.transaction_token;
 		} 
 		catch (error : any) 
 		{
@@ -45,11 +62,6 @@ export class OrderService
 				message: 'Order failed created',
 				success: true
 			}
-		}
-
-		return {
-			message: 'Order successfully created',
-			success: true
 		}
 	}
 
@@ -125,5 +137,7 @@ export class OrderService
     async handleCronAssetCleaning()
     {
 		await this.createAsset();
-    }
+	}
+
+	private transaction_token;
 }
