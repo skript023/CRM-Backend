@@ -25,7 +25,7 @@ export class OrderService
 		try 
 		{
 			const doc = await this.orderModel.create(orderData);
-			const order = await (await doc.populate('user', ['fullname', 'email', 'username'])).populate('product', ['name', ['price']]) as any;
+			const order = await (await doc.populate('user', ['fullname', 'email', 'username'])).populate('product', ['name', 'price']) as any;
 
 			let snap = new midtrans.Snap({
 				// Set to true if you want Production Environment (accept real transaction).
