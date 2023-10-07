@@ -1,29 +1,98 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Payment } from './schema/payment.schema';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+
+import * as mongoose from 'mongoose';
+import { NotFoundError } from 'rxjs';
 
 const midtrans = require('midtrans-client');
 
 @Injectable()
-export class PaymentService {
-	create(createPaymentDto: CreatePaymentDto) {
-		return 'This action adds a new payment';
+export class PaymentService
+{
+	constructor(@InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>) { }
+
+	async create(paymentData: CreatePaymentDto)
+	{
+		try
+		{
+			await this.paymentModel.create(paymentData);
+
+			return {
+				message: 'Success create payment',
+				success: true
+			};
+		}
+		catch (e: any)
+		{
+			return {
+				message: `Failed create payment, exception occured ${e}`,
+				success: false
+			};
+		}
 	}
 
-	findAll() {
-		return `This action returns all payment`;
+	async findAll()
+	{
+		return this.paymentModel.find().populate('user', ['fullname', 'username', 'email']).populate('product', ['name', 'price']).populate('order');
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} payment`;
+	async findOne(id: string)
+	{
+		return this.paymentModel.findById(id).populate('user', ['fullname', 'username', 'email']).populate('product', ['name', 'price']).populate('order');
 	}
 
-	update(id: number, updatePaymentDto: UpdatePaymentDto) {
-		return `This action updates a #${id} payment`;
+	async update(id: string, paymentData: UpdatePaymentDto)
+	{
+		try
+		{
+			const payment = await this.paymentModel.findByIdAndUpdate(id, paymentData, {
+				new: true, runValidators: true
+			});
+
+			if (!payment) return {
+				message: 'Failed update payment, invalid payment',
+				success: false
+			}
+
+			return {
+				message: 'Payment updated successfully',
+				success: true
+			};
+		}
+		catch(e: any)
+		{
+			return {
+				message: `Failed update payment, exception occured ${e}`,
+				success: false
+			};
+		}
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} payment`;
+	async remove(id: string)
+	{
+		try
+		{
+			const payment = await this.paymentModel.findByIdAndUpdate(id);
+
+			if (!payment) return {
+				message: 'Failed update payment, invalid payment',
+				success: false
+			}
+
+			return {
+				message: 'Payment delete successfully',
+				success: true
+			};
+		}
+		catch (e: any) {
+			return {
+				message: `Failed delete payment, exception occured ${e}`,
+				success: false
+			};
+		}
 	}
 
 	async make_payment()
