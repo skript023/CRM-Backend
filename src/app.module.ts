@@ -12,6 +12,7 @@ import { AssetModule } from './asset/asset.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
+import { CartsModule } from './carts/carts.module';
 
 @Module({
     imports: [
@@ -26,7 +27,8 @@ import { PaymentModule } from './payment/payment.module';
         ProductsModule,
         AssetModule,
         OrderModule,
-        PaymentModule
+        PaymentModule,
+        CartsModule
     ],
     controllers: [AppController],
     providers: [AppService],

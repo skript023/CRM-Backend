@@ -8,7 +8,6 @@ import { Asset } from 'src/asset/schema/asset.schema';
 import { Interval } from '@nestjs/schedule';
 import { Payment } from 'src/payment/schema/payment.schema';
 import { Request } from 'express';
-const midtrans = require('midtrans-client');
 
 @Injectable()
 export class OrderService 
@@ -27,40 +26,16 @@ export class OrderService
 			const doc = await this.orderModel.create(orderData);
 			const order = await (await doc.populate('user', ['fullname', 'email', 'username'])).populate('product', ['name', 'price']) as any;
 
-			let snap = new midtrans.Snap({
-				// Set to true if you want Production Environment (accept real transaction).
-				isProduction: false,
-				serverKey: process.env.SERVER_KEY
-			});
-
-			let parameter = {
-				"transaction_details": {
-					"order_id": order._id,
-					"gross_amount": order.product.price
-				},
-				"credit_card": {
-					"secure": true
-				},
-				"customer_details": {
-					"fullname": order.user.fullname,
-					"username": order.user.username,
-					"email": order.user.email
-				}
+			return {
+				message: 'Order added to cart',
+				success: true
 			};
-
-			snap.createTransaction(parameter)
-				.then((transaction) => {
-					// transaction token
-					this.transaction_token = transaction.token;
-				});
-
-			return this.transaction_token;
 		} 
 		catch (error : any) 
 		{
 			return {
 				message: 'Order failed created',
-				success: true
+				success: false
 			}
 		}
 	}
@@ -138,6 +113,4 @@ export class OrderService
     {
 		await this.createAsset();
 	}
-
-	private transaction_token;
 }
