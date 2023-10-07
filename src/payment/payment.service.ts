@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payment } from './schema/payment.schema';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 
 import * as mongoose from 'mongoose';
-import { NotFoundError } from 'rxjs';
 
 const midtrans = require('midtrans-client');
 
@@ -18,12 +18,37 @@ export class PaymentService
 	{
 		try
 		{
-			await this.paymentModel.create(paymentData);
+			const create = await this.paymentModel.create(paymentData);
+			const order = await create.populate('order');
+			const payment = await order.populate('user', ['fullname', 'username', 'email']) as any;
 
-			return {
-				message: 'Success create payment',
-				success: true
+			let snap = new midtrans.Snap({
+				// Set to true if you want Production Environment (accept real transaction).
+				isProduction: false,
+				serverKey: process.env.SERVER_KEY
+			});
+
+			let parameter = {
+				"transaction_details": {
+					"order_id": payment.order_id,
+					"gross_amount": payment.product.price
+				},
+				"credit_card": {
+					"secure": true
+				},
+				"customer_details": {
+					"fullname": payment.user.fullname,
+					"username": payment.user.username,
+					"email": payment.user.email
+				}
 			};
+
+			snap.createTransaction(parameter)
+				.then((transaction) => {
+					// transaction token
+					this.transaction_token = transaction.token;
+				});
+			return this.transaction_token;
 		}
 		catch (e: any)
 		{
@@ -95,35 +120,9 @@ export class PaymentService
 		}
 	}
 
-	async make_payment()
+	async make_payment(paymentData: CreatePaymentDto)
 	{
-		let snap = new midtrans.Snap({
-			// Set to true if you want Production Environment (accept real transaction).
-			isProduction: false,
-			serverKey: process.env.SERVER_KEY
-		});
-
-		let parameter = {
-			"transaction_details": {
-				"order_id": order._id,
-				"gross_amount": order.product.price
-			},
-			"credit_card": {
-				"secure": true
-			},
-			"customer_details": {
-				"fullname": order.user.fullname,
-				"username": order.user.username,
-				"email": order.user.email
-			}
-		};
-
-		snap.createTransaction(parameter)
-		.then((transaction) => {
-			// transaction token
-			this.transaction_token = transaction.token;
-		});
-		return this.transaction_token;
+		
 	}
 
 	private transaction_token
