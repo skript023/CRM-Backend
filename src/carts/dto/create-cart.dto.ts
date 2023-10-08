@@ -4,4 +4,8 @@ export class CreateCartDto
 {
     @IsNotEmpty()
     product_id: string
+    @IsNotEmpty()
+    user_id: string
+    @IsNotEmpty()
+    quantity: number
 }

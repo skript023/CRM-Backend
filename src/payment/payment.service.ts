@@ -77,10 +77,7 @@ export class PaymentService
 				new: true, runValidators: true
 			});
 
-			if (!payment) return {
-				message: 'Failed update payment, invalid payment',
-				success: false
-			}
+			if (!payment) throw new NotFoundException('invalid payment');
 
 			return {
 				message: 'Payment updated successfully',
@@ -102,17 +99,15 @@ export class PaymentService
 		{
 			const payment = await this.paymentModel.findByIdAndUpdate(id);
 
-			if (!payment) return {
-				message: 'Failed update payment, invalid payment',
-				success: false
-			}
+			if (!payment) throw new NotFoundException('invalid payment');
 
 			return {
 				message: 'Payment delete successfully',
 				success: true
 			};
 		}
-		catch (e: any) {
+		catch (e: any)
+		{
 			return {
 				message: `Failed delete payment, exception occured ${e}`,
 				success: false

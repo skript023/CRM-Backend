@@ -15,11 +15,27 @@ export class CartsService
     {
         try
         {
-            await this.cartModel.create(cartData);
+            const exist = await this.cartModel.findOne({ product_id: cartData.product_id });
 
-            return {
-                message: 'Successfully added to cart',
-                success: true
+            if (exist)
+            {
+                cartData.quantity += exist.quantity;
+
+                const cart = await this.cartModel.findByIdAndUpdate(exist._id, cartData);
+
+                return {
+                    message: 'Successfully added to cart',
+                    success: true
+                }
+            }
+            else
+            {
+                await this.cartModel.create(cartData);
+
+                return {
+                    message: 'Successfully added to cart',
+                    success: true
+                }
             }
         }
         catch(e: any)
@@ -33,24 +49,25 @@ export class CartsService
 
     async findAll()
     {
-        return this.cartModel.find().populate('order');
+        return this.cartModel.find().populate('order').populate('product');
     }
 
     async findOne(id: string)
     {
-        return this.cartModel.findById(id).populate('order');
+        const carts = this.cartModel.find({ user_id: id }).populate('order').populate('product');
+
+        if (!carts) throw new NotFoundException('Invalid user');
+
+        return carts;
     }
 
     async update(id: string, cartData: UpdateCartDto)
     {
         try
         {
-            const cart = await this.cartModel.findByIdAndUpdate(id, cartData);
+            const cart = await this.cartModel.findOneAndUpdate({product_id: id}, cartData);
 
-            if (!cart) return {
-                message: 'Failed update cart, data invalid',
-                success: false
-            };
+            if (!cart) throw new NotFoundException('data invalid');
 
             return {
                 message: `Cart updated successfully`,
@@ -58,7 +75,7 @@ export class CartsService
             };
         }
         catch(e: any)
-        {
+        { 
             return {
                 message: `Failed update cart, exception occured ${e}`,
                 success: false
@@ -68,13 +85,11 @@ export class CartsService
 
     async remove(id: string)
     {
-        try {
-            const cart = await this.cartModel.findByIdAndUpdate(id);
+        try
+        {
+            const cart = await this.cartModel.findOneAndDelete({ product_id: id});
 
-            if (!cart) return {
-                message: 'Failed update cart, data invalid',
-                success: false
-            };
+            if (!cart) throw new NotFoundException('data invalid');
 
             return {
                 message: `Cart delete successfully`,

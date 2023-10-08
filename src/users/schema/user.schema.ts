@@ -71,3 +71,15 @@ UserSchema.virtual('asset', {
     localField: '_id',
     foreignField: 'user_id'
 })
+
+UserSchema.virtual('order', {
+    ref: 'Order',
+    localField: '_id',
+    foreignField: 'user_id'
+})
+
+UserSchema.virtual('cart', {
+    ref: 'Cart',
+    localField: '_id',
+    foreignField: 'user_id'
+})

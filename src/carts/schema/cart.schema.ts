@@ -17,23 +17,28 @@ export class Cart
     @Prop({ type: SchemaTypes.ObjectId, auto: true })
     _id: string
 
-    @Prop({ type: SchemaTypes.ObjectId, ref: 'Order' })
-    order_id: string
+    @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
+    user_id: string
 
     @Prop({ type: SchemaTypes.ObjectId, ref: 'Product' })
     product_id: string
 
-    @Prop({ required: true })
+    @Prop({ required: true, default: 1 })
     quantity: number
-
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
 
+CartSchema.virtual('user', {
+    ref: 'User',
+    localField: 'user_id',
+    foreignField: '_id'
+})
+
 CartSchema.virtual('order', {
     ref: 'Order',
-    localField: 'order_id',
-    foreignField: '_id',
+    localField: '_id',
+    foreignField: 'cart_id',
     justOne: true
 })
 

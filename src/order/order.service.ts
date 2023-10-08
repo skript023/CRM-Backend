@@ -1,13 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Request } from 'express';
+import { Interval } from '@nestjs/schedule';
+import { Order } from './schema/order.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Cart } from '../carts/schema/cart.schema';
+import { Asset } from 'src/asset/schema/asset.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Order } from './schema/order.schema';
-import * as mongoose from 'mongoose'
-import { Asset } from 'src/asset/schema/asset.schema';
-import { Interval } from '@nestjs/schedule';
 import { Payment } from 'src/payment/schema/payment.schema';
-import { Request } from 'express';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class OrderService 
@@ -15,7 +17,8 @@ export class OrderService
 	constructor(
 		@InjectModel(Order.name) private orderModel: mongoose.Model<Order>, 
 		@InjectModel(Asset.name) private assetModel: mongoose.Model<Asset>,
-		@InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>
+		@InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>,
+		@InjectModel(Cart.name) private cartModel: mongoose.Model<Cart>
 	)
     {}
 
@@ -24,7 +27,6 @@ export class OrderService
 		try 
 		{
 			const doc = await this.orderModel.create(orderData);
-			const order = await (await doc.populate('user', ['fullname', 'email', 'username'])).populate('product', ['name', 'price']) as any;
 
 			return {
 				message: 'Order added to cart',
@@ -58,7 +60,6 @@ export class OrderService
 
 		if (!order) throw new NotFoundException("Invalid order");
 		
-
 		return {
 			message: `Update ${order.product?.name} order success`,
 			success: true
