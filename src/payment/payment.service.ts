@@ -29,7 +29,7 @@ export class PaymentService
 
 			let parameter = {
 				"transaction_details": {
-					"order_id": payment.code,
+					"order_id": payment._id,
 					"gross_amount": payment.amount
 				},
 				"credit_card": {
