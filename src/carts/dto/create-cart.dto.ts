@@ -8,4 +8,5 @@ export class CreateCartDto
     user_id: string
     @IsNotEmpty()
     quantity: number
+    cart_date: string
 }

@@ -19,8 +19,7 @@ export class PaymentService
 		try
 		{
 			const create = await this.paymentModel.create(paymentData);
-			const order = await create.populate('order');
-			const payment = await order.populate('user', ['fullname', 'username', 'email']) as any;
+			const payment = await create.populate('user', ['fullname', 'username', 'email']) as any;
 
 			let snap = new midtrans.Snap({
 				// Set to true if you want Production Environment (accept real transaction).
@@ -30,8 +29,8 @@ export class PaymentService
 
 			let parameter = {
 				"transaction_details": {
-					"order_id": payment.order_id,
-					"gross_amount": payment.product.price
+					"order_id": payment.code,
+					"gross_amount": payment.amount
 				},
 				"credit_card": {
 					"secure": true
@@ -42,13 +41,18 @@ export class PaymentService
 					"email": payment.user.email
 				}
 			};
-
+			 
 			snap.createTransaction(parameter)
 				.then((transaction) => {
 					// transaction token
 					this.transaction_token = transaction.token;
 				});
-			return this.transaction_token;
+			return {
+				message: 'Payment token generated',
+				success: true,
+				token: this.transaction_token,
+				payment: payment._id
+			}
 		}
 		catch (e: any)
 		{
@@ -80,7 +84,7 @@ export class PaymentService
 			if (!payment) throw new NotFoundException('invalid payment');
 
 			return {
-				message: 'Payment updated successfully',
+				message: `Payment is ${payment.status}`,
 				success: true
 			};
 		}
@@ -97,7 +101,7 @@ export class PaymentService
 	{
 		try
 		{
-			const payment = await this.paymentModel.findByIdAndUpdate(id);
+			const payment = await this.paymentModel.findByIdAndDelete(id);
 
 			if (!payment) throw new NotFoundException('invalid payment');
 
@@ -115,7 +119,7 @@ export class PaymentService
 		}
 	}
 
-	async make_payment(paymentData: CreatePaymentDto)
+	async payment_completed(paymentData: CreatePaymentDto)
 	{
 		
 	}

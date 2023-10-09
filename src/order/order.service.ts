@@ -28,6 +28,8 @@ export class OrderService
 		{
 			const doc = await this.orderModel.create(orderData);
 
+			if (!doc) throw new NotFoundException('Failed create order');
+
 			return {
 				message: 'Order added to cart',
 				success: true
@@ -36,7 +38,7 @@ export class OrderService
 		catch (error : any) 
 		{
 			return {
-				message: 'Order failed created',
+				message: error,
 				success: false
 			}
 		}

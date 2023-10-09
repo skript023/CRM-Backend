@@ -25,9 +25,9 @@ export class Asset
     payment_id: string
     @Prop({ required: true })
     license: string
-    @Prop({ default: 'Inactive' })
+    @Prop({ required: true, default: 'Inactive' })
     status: string
-    @Prop({ default: false })
+    @Prop({ default: true })
     expired: boolean
     @Prop({ type: String, required: true })
     expired_date: string

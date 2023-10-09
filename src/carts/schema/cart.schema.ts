@@ -25,6 +25,9 @@ export class Cart
 
     @Prop({ required: true, default: 1 })
     quantity: number
+
+    @Prop({ required: true, default: new Date().toUTCString() })
+    cart_date: string
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
