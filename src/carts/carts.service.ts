@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Cart } from './schema/cart.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateCartDto } from './dto/create-cart.dto';
@@ -23,10 +23,12 @@ export class CartsService
 
                 const cart = await this.cartModel.findByIdAndUpdate(exist._id, cartData);
 
+                if (!cart) throw new NotFoundException('Invalid data');
+
                 return {
                     message: 'Successfully added to cart',
                     success: true
-                }
+                };
             }
             else
             {
@@ -35,15 +37,15 @@ export class CartsService
                 return {
                     message: 'Successfully added to cart',
                     success: true
-                }
+                };
             }
         }
-        catch(e: any)
+        catch (e: any)
         {
             return {
                 message: `Failed added to cart, exception occured ${e}`,
                 success: false
-            }
+            };
         }
     }
 
@@ -54,11 +56,26 @@ export class CartsService
 
     async findOne(id: string)
     {
-        const carts = this.cartModel.find({ user_id: id }).populate('order').populate('product');
+        try
+        {
+            if (id === 'undefined')
+            {
+                throw new BadRequestException('Invalid params');
+            }
 
-        if (!carts) throw new NotFoundException('Invalid user');
+            const carts = this.cartModel.find({ user_id: id }).populate('order').populate('product');
 
-        return carts;
+            if (!carts) throw new NotFoundException('Invalid user cart');
+
+            return carts;
+        }
+        catch (e: any)
+        {
+            return {
+                message: `Cannot retrieve cart, error caught on ${e.message}`,
+                success: false
+            };
+        }
     }
 
     async update(id: string, cartData: UpdateCartDto)

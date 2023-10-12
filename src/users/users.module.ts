@@ -78,6 +78,18 @@ export class UsersModule implements NestModule
             { path: 'products/detail/:id', method: RequestMethod.GET },
             { path: 'products/update/:id', method: RequestMethod.PATCH },
             { path: 'products/delete/:id', method: RequestMethod.DELETE },
+
+            { path: 'carts', method: RequestMethod.GET },
+            { path: 'carts', method: RequestMethod.POST },
+            { path: 'carts/:id', method: RequestMethod.GET },
+            { path: 'carts/:id', method: RequestMethod.PATCH },
+            { path: 'carts/:id', method: RequestMethod.DELETE },
+
+            { path: 'payment', method: RequestMethod.GET },
+            { path: 'payment', method: RequestMethod.POST },
+            { path: 'payment/:id', method: RequestMethod.GET },
+            { path: 'payment/:id', method: RequestMethod.PATCH },
+            { path: 'payment/:id', method: RequestMethod.DELETE },
         );
     }
 }
