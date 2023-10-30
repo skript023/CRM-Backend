@@ -22,8 +22,8 @@ export class Payment
     @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
     user_id: string
 
-    @Prop({ type: [SchemaTypes.ObjectId], ref: 'Product' })
-    product_id: string[]
+    @Prop({ type: [SchemaTypes.ObjectId], ref: 'Order' })
+    order_id: string[]
 
     @Prop({ required: true })
     amount: number

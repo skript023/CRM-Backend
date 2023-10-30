@@ -26,8 +26,8 @@ export class Order
     @Prop({ default: 'Open' })
     status: string
 
-    @Prop({ required: true, default: new Date().toUTCString() })
-    order_date: string
+    @Prop({ required: true, default: new Date(Date.now() + 60 * 60 * 1000) })
+    due_date: string
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
