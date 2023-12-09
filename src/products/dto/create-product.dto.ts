@@ -1,19 +1,18 @@
-import { IsNotEmpty } from "class-validator"
-import { ProductGrade } from "../enum/product.enum"
+import { IsNotEmpty } from 'class-validator';
+import { ProductGrade } from '../enum/product.enum';
 
-export class CreateProductDto
-{
+export class CreateProductDto {
     @IsNotEmpty()
-    readonly code: number
+    readonly code: number;
     @IsNotEmpty()
-    readonly name: string
+    readonly name: string;
     @IsNotEmpty()
-    readonly grade: ProductGrade
+    readonly grade: ProductGrade;
     @IsNotEmpty()
-    readonly game: string
+    readonly game: string;
     @IsNotEmpty()
-    readonly target: string
-    file: string
-    readonly version: string
-    readonly status: string
+    readonly target: string;
+    file: string;
+    readonly version: string;
+    readonly status: string;
 }

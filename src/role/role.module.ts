@@ -10,11 +10,11 @@ import { ConfigModule } from '@nestjs/config';
         MongooseModule.forFeature([{ name: 'Role', schema: RoleSchema }]),
         ConfigModule.forRoot({
             envFilePath: '.env',
-            isGlobal: true
+            isGlobal: true,
         }),
     ],
     controllers: [RoleController],
     providers: [RoleService],
-    exports:[RoleService]
+    exports: [RoleService],
 })
 export class RoleModule {}

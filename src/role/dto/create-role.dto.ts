@@ -1,14 +1,13 @@
-import { IsNotEmpty, IsObject } from "class-validator"
-import { AccessAction } from "../enum/access.enum"
-import { AccessLevel } from "../enum/level.enum"
+import { IsNotEmpty, IsObject } from 'class-validator';
+import { AccessAction } from '../enum/access.enum';
+import { AccessLevel } from '../enum/level.enum';
 
-export class CreateRoleDto 
-{
+export class CreateRoleDto {
     @IsNotEmpty()
-    name: string
+    name: string;
     @IsNotEmpty()
     @IsObject()
-    access: AccessAction
+    access: AccessAction;
     @IsNotEmpty()
-    level: AccessLevel
+    level: AccessLevel;
 }

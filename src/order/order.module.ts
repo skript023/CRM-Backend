@@ -10,20 +10,20 @@ import { PaymentSchema } from 'src/payment/schema/payment.schema';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-	imports: [
-		MongooseModule.forFeature([
-			{ name: 'Order', schema: OrderSchema }, 
-			{ name: 'Asset', schema: AssetSchema },
-			{ name: 'Payment', schema: PaymentSchema },
-			{ name: 'User', schema: UserSchema },
-			{ name: 'Cart', schema: CartSchema },
-		]),
-		ConfigModule.forRoot({
-			envFilePath: '.env',
-			isGlobal: true
-		}),
-	],
-	controllers: [OrderController],
-	providers: [OrderService],
+    imports: [
+        MongooseModule.forFeature([
+            { name: 'Order', schema: OrderSchema },
+            { name: 'Asset', schema: AssetSchema },
+            { name: 'Payment', schema: PaymentSchema },
+            { name: 'User', schema: UserSchema },
+            { name: 'Cart', schema: CartSchema },
+        ]),
+        ConfigModule.forRoot({
+            envFilePath: '.env',
+            isGlobal: true,
+        }),
+    ],
+    controllers: [OrderController],
+    providers: [OrderService],
 })
 export class OrderModule {}

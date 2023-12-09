@@ -1,40 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+} from '@nestjs/common';
 import { AssetService } from './asset.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
 
 @Controller('asset')
-export class AssetController
-{
+export class AssetController {
     constructor(private readonly assetService: AssetService) {}
 
     @Post()
-    async create(@Body() createAssetDto: CreateAssetDto)
-    {
+    async create(@Body() createAssetDto: CreateAssetDto) {
         return this.assetService.create(createAssetDto);
     }
 
     @Get()
-    async findAll()
-    {
+    async findAll() {
         return this.assetService.findAll();
     }
 
     @Get('detail/:id')
-    async findOne(@Param('id') id: string)
-    {
+    async findOne(@Param('id') id: string) {
         return this.assetService.findOne(id);
     }
 
     @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() updateAssetDto: UpdateAssetDto)
-    {
+    async update(
+        @Param('id') id: string,
+        @Body() updateAssetDto: UpdateAssetDto,
+    ) {
         return this.assetService.update(id, updateAssetDto);
     }
 
     @Delete('delete/:id')
-    async remove(@Param('id') id: string)
-    {
+    async remove(@Param('id') id: string) {
         return this.assetService.remove(id);
     }
 }

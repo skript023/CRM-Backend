@@ -1,11 +1,10 @@
-import { IsNotEmpty } from "class-validator"
+import { IsNotEmpty } from 'class-validator';
 
-export class CreateOrderDto
-{
+export class CreateOrderDto {
     @IsNotEmpty()
-    readonly user_id: string
+    readonly user_id: string;
     @IsNotEmpty()
-    readonly cart_id: string[]
-    status: string
-    order_date: string
+    readonly cart_id: string[];
+    status: string;
+    order_date: string;
 }

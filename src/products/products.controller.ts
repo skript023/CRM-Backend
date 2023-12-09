@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    UseInterceptors,
+    UploadedFile,
+    ParseFilePipe,
+    MaxFileSizeValidator,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -6,69 +18,72 @@ import { Auth } from '../auth/decorator/auth.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
-export class ProductsController
-{
+export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'create'
+        access: 'create',
     })
     @UseInterceptors(FileInterceptor('file'))
     @Post('add')
-    create(@Body() createProductDto: CreateProductDto, @UploadedFile(new ParseFilePipe({
-        validators: [
-            new MaxFileSizeValidator({ maxSize: 20000000 }),
-        ],
-        fileIsRequired: false,
-    })) file: Express.Multer.File)
-    {
+    create(
+        @Body() createProductDto: CreateProductDto,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [new MaxFileSizeValidator({ maxSize: 20000000 })],
+                fileIsRequired: false,
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
         return this.productsService.create(createProductDto, file);
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'read'
+        access: 'read',
     })
     @Get()
-    findAll()
-    {
+    findAll() {
         return this.productsService.findAll();
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'read'
+        access: 'read',
     })
     @Get('detail/:id')
-    findOne(@Param('id') id: string)
-    {
+    findOne(@Param('id') id: string) {
         return this.productsService.findOne(id);
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'update'
+        access: 'update',
     })
     @Patch('update/:id')
     @UseInterceptors(FileInterceptor('file'))
-    update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @UploadedFile(new ParseFilePipe({
-        validators: [
-            new MaxFileSizeValidator({ maxSize: 20000000 }),
-        ],
-        fileIsRequired: false,
-    })) file: Express.Multer.File)
-    {
+    update(
+        @Param('id') id: string,
+        @Body() updateProductDto: UpdateProductDto,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [new MaxFileSizeValidator({ maxSize: 20000000 })],
+                fileIsRequired: false,
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
         return this.productsService.update(id, updateProductDto, file);
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'delete'
+        access: 'delete',
     })
     @Delete('delete/:id')
-    remove(@Param('id') id: string)
-    {
+    remove(@Param('id') id: string) {
         return this.productsService.remove(id);
     }
 }

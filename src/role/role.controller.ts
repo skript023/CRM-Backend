@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UseGuards } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    NotFoundException,
+    UseGuards,
+} from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -12,63 +22,60 @@ export class RoleController {
     @Post('add')
     @Auth({
         role: ['admin', 'staff'],
-        access: 'create'
+        access: 'create',
     })
-    async create(@Body() createRoleDto: CreateRoleDto) : Promise<any>
-    {
+    async create(@Body() createRoleDto: CreateRoleDto): Promise<any> {
         const role = await this.roleService.create(createRoleDto);
 
         return {
-            message: `Create role ${role.name} success`
-        }
+            message: `Create role ${role.name} success`,
+        };
     }
 
     @Get()
     @Auth({
         role: ['admin', 'staff'],
-        access: 'read'
+        access: 'read',
     })
-    async findAll() : Promise<Role[]>
-    {
+    async findAll(): Promise<Role[]> {
         return this.roleService.findAll();
     }
-
 
     @Get('detail/:id')
     @Auth({
         role: ['admin', 'staff'],
-        access: 'read'
+        access: 'read',
     })
-    async findOne(@Param('id') id: string) : Promise<Role>
-    {
+    async findOne(@Param('id') id: string): Promise<Role> {
         return this.roleService.findOne(id);
     }
 
     @Patch('update/:id')
     @Auth({
         role: ['admin'],
-        access: 'update'
+        access: 'update',
     })
-    async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) : Promise<any>
-    {
+    async update(
+        @Param('id') id: string,
+        @Body() updateRoleDto: UpdateRoleDto,
+    ): Promise<any> {
         const role = await this.roleService.update(id, updateRoleDto);
 
         return {
-            message: `Update role ${role.name} success`
-        }
+            message: `Update role ${role.name} success`,
+        };
     }
 
     @Delete('delete/:id')
     @Auth({
         role: ['admin', 'staff'],
-        access: 'delete'
+        access: 'delete',
     })
-    async remove(@Param('id') id: string) : Promise<any>
-    {
+    async remove(@Param('id') id: string): Promise<any> {
         const role = await this.roleService.remove(id);
 
         return {
-            message: `Delete role ${role.name} success`
-        } 
+            message: `Delete role ${role.name} success`,
+        };
     }
 }

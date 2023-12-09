@@ -5,5 +5,5 @@ export enum AccessLevel {
     delete,
     suspend,
     system,
-    all
+    all,
 }

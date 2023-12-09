@@ -20,27 +20,32 @@ import * as fs from 'fs';
                     const extension = file.originalname.split('.')[1];
                     const filename = `${name}_${Date.now()}.${extension}`;
 
-                    callback(null, filename)
-                }
+                    callback(null, filename);
+                },
             }),
             fileFilter: (req, file, callback) => {
-                if (!file.originalname.match(/\.(dll|bin|vpack)$/))
-                {
+                if (!file.originalname.match(/\.(dll|bin|vpack)$/)) {
                     return callback(null, false);
                 }
 
-                if (fs.existsSync(`${__dirname}/assets/binaries/${file.originalname}`))
-                {
-                    const exception = new NotAcceptableException(`File ${file.originalname} is already uploaded!`, `File ${file.originalname} is already uploaded!`);
+                if (
+                    fs.existsSync(
+                        `${__dirname}/assets/binaries/${file.originalname}`,
+                    )
+                ) {
+                    const exception = new NotAcceptableException(
+                        `File ${file.originalname} is already uploaded!`,
+                        `File ${file.originalname} is already uploaded!`,
+                    );
                     callback(exception, false);
                 }
 
-                callback(null, true)
-            }
+                callback(null, true);
+            },
         }),
         ConfigModule.forRoot({
             envFilePath: '.env',
-            isGlobal: true
+            isGlobal: true,
         }),
     ],
     controllers: [ProductsController],

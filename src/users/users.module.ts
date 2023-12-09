@@ -1,4 +1,11 @@
-import { forwardRef, MiddlewareConsumer, Module, NestModule, NotAcceptableException, RequestMethod } from '@nestjs/common';
+import {
+    forwardRef,
+    MiddlewareConsumer,
+    Module,
+    NestModule,
+    NotAcceptableException,
+    RequestMethod,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -18,47 +25,42 @@ import { AuthService } from '../auth/auth.service';
                 filename: (req, file, cb) => {
                     const name = file.originalname.split('.')[0];
                     const extension = file.originalname.split('.')[1];
-                    const filename = `${name}_${Date.now()}.${extension}`
+                    const filename = `${name}_${Date.now()}.${extension}`;
 
-                    cb(null, filename)
-                }
+                    cb(null, filename);
+                },
             }),
             fileFilter: (req, file, callback) => {
-                if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
-                {
-                    return callback(null, false)
+                if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+                    return callback(null, false);
                 }
 
-                callback(null, true)
-            }
+                callback(null, true);
+            },
         }),
         RoleModule,
     ],
     controllers: [UsersController],
     providers: [UsersService, AuthService],
-    exports: [UsersService]
+    exports: [UsersService],
 })
-export class UsersModule implements NestModule
-{
-    configure(consumer: MiddlewareConsumer)
-    {
-        consumer
-        .apply(AuthMiddleware)
-        .forRoutes(
+export class UsersModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes(
             { path: 'auth/profile', method: RequestMethod.GET },
             { path: 'auth/logout', method: RequestMethod.GET },
 
             { path: 'user', method: RequestMethod.GET },
-            { path: 'user/detail/:id', method: RequestMethod.GET }, 
+            { path: 'user/detail/:id', method: RequestMethod.GET },
             { path: 'user/update/:id', method: RequestMethod.PATCH },
-            { path: 'user/avatar/:name', method: RequestMethod.GET }, 
+            { path: 'user/avatar/:name', method: RequestMethod.GET },
             { path: 'user/profile', method: RequestMethod.GET },
-            { path: 'user/delete/:id', method: RequestMethod.DELETE }, 
+            { path: 'user/delete/:id', method: RequestMethod.DELETE },
 
-            { path: 'role', method: RequestMethod.GET }, 
-            { path: 'role/add', method: RequestMethod.POST }, 
+            { path: 'role', method: RequestMethod.GET },
+            { path: 'role/add', method: RequestMethod.POST },
             { path: 'role/detail/:id', method: RequestMethod.GET },
-            { path: 'role/update/:id', method: RequestMethod.PATCH }, 
+            { path: 'role/update/:id', method: RequestMethod.PATCH },
             { path: 'role/delete/:id', method: RequestMethod.DELETE },
 
             { path: 'activity', method: RequestMethod.GET },
@@ -72,7 +74,7 @@ export class UsersModule implements NestModule
             { path: 'asset/detail/:id', method: RequestMethod.GET },
             { path: 'asset/update/:id', method: RequestMethod.PATCH },
             { path: 'asset/delete/:id', method: RequestMethod.DELETE },
-            
+
             { path: 'products', method: RequestMethod.GET },
             { path: 'products/add', method: RequestMethod.POST },
             { path: 'products/detail/:id', method: RequestMethod.GET },

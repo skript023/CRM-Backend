@@ -9,17 +9,19 @@ import { ConfigModule } from '@nestjs/config';
     imports: [
         ConfigModule.forRoot({
             envFilePath: '.env',
-            isGlobal: true
+            isGlobal: true,
         }),
-        forwardRef(() => JwtModule.register({
-            global: true,
-            secret: process.env.SECRET,
-            signOptions: { expiresIn: '1h' },
-        })),
-        UsersModule, 
+        forwardRef(() =>
+            JwtModule.register({
+                global: true,
+                secret: process.env.SECRET,
+                signOptions: { expiresIn: '1h' },
+            }),
+        ),
+        UsersModule,
     ],
     providers: [AuthService],
     controllers: [AuthController],
-    exports: [AuthService]
+    exports: [AuthService],
 })
 export class AuthModule {}

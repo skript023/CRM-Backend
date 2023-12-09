@@ -1,15 +1,14 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator"
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreatePaymentDto
-{
+export class CreatePaymentDto {
     @IsNotEmpty()
-    readonly user_id: string
-
-    @IsNotEmpty()
-    readonly product_id: string[]
+    readonly user_id: string;
 
     @IsNotEmpty()
-    readonly amount: number
+    readonly product_id: string[];
 
-    readonly status: string
+    @IsNotEmpty()
+    readonly amount: number;
+
+    readonly status: string;
 }

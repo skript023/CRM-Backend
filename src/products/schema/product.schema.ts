@@ -1,50 +1,47 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import * as mongoose from "mongoose";
-import { ProductGrade } from "../enum/product.enum";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
+import { ProductGrade } from '../enum/product.enum';
 
 @Schema({
     timestamps: true,
     toJSON: {
         getters: true,
-        virtuals: true
+        virtuals: true,
     },
     toObject: {
-        virtuals: true
-    }
+        virtuals: true,
+    },
 })
-
-
-export class Product
-{
+export class Product {
     @Prop({ type: mongoose.SchemaTypes.ObjectId, auto: true })
-    _id: string
+    _id: string;
 
     @Prop({ defaul: 0 })
-    code: number
+    code: number;
 
     @Prop({ required: true })
-    name: string
+    name: string;
 
     @Prop({ required: true })
-    price: number
+    price: number;
 
     @Prop({ required: true })
-    grade: ProductGrade
+    grade: ProductGrade;
 
     @Prop({ required: true })
-    game: string
+    game: string;
 
     @Prop({ required: true })
-    target: string
+    target: string;
 
     @Prop({ default: null })
-    file: string
+    file: string;
 
     @Prop({ default: '1.0' })
-    version: string
+    version: string;
 
     @Prop({ default: 'Unsupported' })
-    status: string
+    status: string;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product)
+export const ProductSchema = SchemaFactory.createForClass(Product);

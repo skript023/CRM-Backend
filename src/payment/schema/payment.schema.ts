@@ -1,35 +1,34 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { SchemaTypes } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { SchemaTypes } from 'mongoose';
 
 @Schema({
     timestamps: true,
     toJSON: {
         getters: true,
-        virtuals: true
+        virtuals: true,
     },
     toObject: {
-        virtuals: true
-    }
+        virtuals: true,
+    },
 })
-export class Payment 
-{
+export class Payment {
     @Prop({ type: SchemaTypes.ObjectId, auto: true })
-    _id: string
+    _id: string;
 
     @Prop({ type: Number, required: true })
-    code: number
+    code: number;
 
     @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
-    user_id: string
+    user_id: string;
 
     @Prop({ type: [SchemaTypes.ObjectId], ref: 'Order' })
-    order_id: string[]
+    order_id: string[];
 
     @Prop({ required: true })
-    amount: number
+    amount: number;
 
     @Prop({ default: 'Pending' })
-    status: string
+    status: string;
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);
@@ -38,5 +37,5 @@ PaymentSchema.virtual('user', {
     ref: 'User',
     localField: 'user_id',
     foreignField: '_id',
-    justOne: true
-})
+    justOne: true,
+});

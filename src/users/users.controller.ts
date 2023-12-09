@@ -1,4 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, NotFoundException, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UploadedFile, Res, Redirect } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    Request,
+    NotFoundException,
+    UseInterceptors,
+    ParseFilePipe,
+    MaxFileSizeValidator,
+    FileTypeValidator,
+    UploadedFile,
+    Res,
+    Redirect,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,88 +26,91 @@ import * as fs from 'fs';
 import { Auth } from '../auth/decorator/auth.decorator';
 
 @Controller('user')
-export class UsersController 
-{
+export class UsersController {
     constructor(private userService: UsersService) {}
 
     @Post('add')
     @UseInterceptors(FileInterceptor('image'))
-    async create(@Body() createUserDto: CreateUserDto, @UploadedFile(new ParseFilePipe({
-        validators: [
-            new MaxFileSizeValidator({ maxSize: 1000000 }),
-            new FileTypeValidator({ fileType: 'image' }),
-        ],
-        fileIsRequired: false,
-    })) file : Express.Multer.File) 
-    {
+    async create(
+        @Body() createUserDto: CreateUserDto,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new MaxFileSizeValidator({ maxSize: 1000000 }),
+                    new FileTypeValidator({ fileType: 'image' }),
+                ],
+                fileIsRequired: false,
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
         return this.userService.create(createUserDto, file);
     }
 
     @Get('avatar/:name')
-    async image(@Param('name') name, @Res() res : Response)
-    {
-        if (fs.existsSync(`${__dirname}/assets/avatar/${name}`))
-        {
+    async image(@Param('name') name, @Res() res: Response) {
+        if (fs.existsSync(`${__dirname}/assets/avatar/${name}`)) {
             res.sendFile(name, { root: `${__dirname}/assets/avatar/` });
-        }
-        else
-        {
-            res.redirect(`https://cdn.glitch.global/134e6d29-f12e-4932-87e4-2031bac5ad1d/${name}`);
+        } else {
+            res.redirect(
+                `https://cdn.glitch.global/134e6d29-f12e-4932-87e4-2031bac5ad1d/${name}`,
+            );
         }
     }
 
     @Delete('avatar/delete/:name')
-    async delete_image(@Param('name') name)
-    {
+    async delete_image(@Param('name') name) {
         fs.unlinkSync(`${__dirname}/assets/avatar/${name}`);
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'read'
+        access: 'read',
     })
     @Get()
-    async users() : Promise<User[]> 
-    {
+    async users(): Promise<User[]> {
         return this.userService.users();
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'read'
+        access: 'read',
     })
-    @Get('detail/:id') 
-    async get_by_id(@Param('id') id: string): Promise<User>
-    {
+    @Get('detail/:id')
+    async get_by_id(@Param('id') id: string): Promise<User> {
         return this.userService.find_by_id(id);
     }
 
     @UseInterceptors(FileInterceptor('image'))
     @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @UploadedFile(new ParseFilePipe({
-        validators: [
-            new MaxFileSizeValidator({ maxSize: 1000000 }),
-            new FileTypeValidator({ fileType: 'image' }),
-        ],
-        fileIsRequired: false,
-    })) file: Express.Multer.File)
-    {
-        return this.userService.update(id, updateUserDto, file); 
+    async update(
+        @Param('id') id: string,
+        @Body() updateUserDto: UpdateUserDto,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new MaxFileSizeValidator({ maxSize: 1000000 }),
+                    new FileTypeValidator({ fileType: 'image' }),
+                ],
+                fileIsRequired: false,
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
+        return this.userService.update(id, updateUserDto, file);
     }
 
     @Auth({
         role: ['admin', 'staff'],
-        access: 'delete'
+        access: 'delete',
     })
     @Delete('delete/:id')
-    async delete(@Param('id') id: string) 
-    {
+    async delete(@Param('id') id: string) {
         return this.userService.delete(id);
     }
 
     @Get('profile')
-    async getProfile(@Request() req)
-    {
+    async getProfile(@Request() req) {
         return req.user;
     }
 }

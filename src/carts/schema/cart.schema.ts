@@ -1,33 +1,31 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { SchemaTypes } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { SchemaTypes } from 'mongoose';
 
 @Schema({
     timestamps: true,
     toJSON: {
         getters: true,
-        virtuals: true
+        virtuals: true,
     },
     toObject: {
-        virtuals: true
-    }
+        virtuals: true,
+    },
 })
-
-export class Cart
-{
+export class Cart {
     @Prop({ type: SchemaTypes.ObjectId, auto: true })
-    _id: string
+    _id: string;
 
     @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
-    user_id: string
+    user_id: string;
 
     @Prop({ type: SchemaTypes.ObjectId, ref: 'Product' })
-    product_id: string
+    product_id: string;
 
     @Prop({ required: true, default: 1 })
-    quantity: number
+    quantity: number;
 
     @Prop({ required: true, default: new Date().toUTCString() })
-    cart_date: string
+    cart_date: string;
 }
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
@@ -35,19 +33,19 @@ export const CartSchema = SchemaFactory.createForClass(Cart);
 CartSchema.virtual('user', {
     ref: 'User',
     localField: 'user_id',
-    foreignField: '_id'
-})
+    foreignField: '_id',
+});
 
 CartSchema.virtual('order', {
     ref: 'Order',
     localField: '_id',
     foreignField: 'cart_id',
-    justOne: true
-})
+    justOne: true,
+});
 
 CartSchema.virtual('product', {
     ref: 'Product',
     localField: 'product_id',
     foreignField: '_id',
-    justOne: true
-})
+    justOne: true,
+});

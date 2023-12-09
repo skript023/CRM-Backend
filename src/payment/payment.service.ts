@@ -10,119 +10,120 @@ import * as mongoose from 'mongoose';
 const midtrans = require('midtrans-client');
 
 @Injectable()
-export class PaymentService
-{
-	constructor(@InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>) { }
+export class PaymentService {
+    constructor(
+        @InjectModel(Payment.name)
+        private paymentModel: mongoose.Model<Payment>,
+    ) {}
 
-	async create(paymentData: CreatePaymentDto)
-	{
-		try
-		{
-			const create = await this.paymentModel.create(paymentData);
-			const payment = await create.populate('user', ['fullname', 'username', 'email']) as any;
+    async create(paymentData: CreatePaymentDto) {
+        try {
+            const create = await this.paymentModel.create(paymentData);
+            const payment = (await create.populate('user', [
+                'fullname',
+                'username',
+                'email',
+            ])) as any;
 
-			let snap = new midtrans.Snap({
-				// Set to true if you want Production Environment (accept real transaction).
-				isProduction: false,
-				serverKey: process.env.SERVER_KEY
-			});
+            const snap = new midtrans.Snap({
+                // Set to true if you want Production Environment (accept real transaction).
+                isProduction: false,
+                serverKey: process.env.SERVER_KEY,
+            });
 
-			let parameter = {
-				"transaction_details": {
-					"order_id": payment._id,
-					"gross_amount": payment.amount
-				},
-				"credit_card": {
-					"secure": true
-				},
-				"customer_details": {
-					"fullname": payment.user.fullname,
-					"username": payment.user.username,
-					"email": payment.user.email
-				}
-			};
-			 
-			snap.createTransaction(parameter)
-				.then((transaction) => {
-					// transaction token
-					this.transaction_token = transaction.token;
-				});
-			return {
-				message: 'Payment token generated',
-				success: true,
-				token: this.transaction_token,
-				payment: payment._id
-			}
-		}
-		catch (e: any)
-		{
-			return {
-				message: `Failed create payment, exception occured ${e}`,
-				success: false
-			};
-		}
-	}
+            const parameter = {
+                transaction_details: {
+                    order_id: payment._id,
+                    gross_amount: payment.amount,
+                },
+                credit_card: {
+                    secure: true,
+                },
+                customer_details: {
+                    fullname: payment.user.fullname,
+                    username: payment.user.username,
+                    email: payment.user.email,
+                },
+            };
 
-	async findAll()
-	{
-		return this.paymentModel.find().populate('user', ['fullname', 'username', 'email']).populate('product', ['name', 'price']).populate('order');
-	}
+            snap.createTransaction(parameter).then((transaction) => {
+                // transaction token
+                this.transaction_token = transaction.token;
+            });
+            return {
+                message: 'Payment token generated',
+                success: true,
+                token: this.transaction_token,
+                payment: payment._id,
+            };
+        } catch (e: any) {
+            return {
+                message: `Failed create payment, exception occured ${e}`,
+                success: false,
+            };
+        }
+    }
 
-	async findOne(id: string)
-	{
-		return this.paymentModel.findById(id).populate('user', ['fullname', 'username', 'email']).populate('product', ['name', 'price']).populate('order');
-	}
+    async findAll() {
+        return this.paymentModel
+            .find()
+            .populate('user', ['fullname', 'username', 'email'])
+            .populate('product', ['name', 'price'])
+            .populate('order');
+    }
 
-	async update(id: string, paymentData: UpdatePaymentDto)
-	{
-		try
-		{
-			const payment = await this.paymentModel.findByIdAndUpdate(id, paymentData, {
-				new: true, runValidators: true
-			});
+    async findOne(id: string) {
+        return this.paymentModel
+            .findById(id)
+            .populate('user', ['fullname', 'username', 'email'])
+            .populate('product', ['name', 'price'])
+            .populate('order');
+    }
 
-			if (!payment) throw new NotFoundException('invalid payment');
+    async update(id: string, paymentData: UpdatePaymentDto) {
+        try {
+            const payment = await this.paymentModel.findByIdAndUpdate(
+                id,
+                paymentData,
+                {
+                    new: true,
+                    runValidators: true,
+                },
+            );
 
-			return {
-				message: `Payment is ${payment.status}`,
-				success: true
-			};
-		}
-		catch(e: any)
-		{
-			return {
-				message: `Failed update payment, exception occured ${e}`,
-				success: false
-			};
-		}
-	}
+            if (!payment) throw new NotFoundException('invalid payment');
 
-	async remove(id: string)
-	{
-		try
-		{
-			const payment = await this.paymentModel.findByIdAndDelete(id);
+            return {
+                message: `Payment is ${payment.status}`,
+                success: true,
+            };
+        } catch (e: any) {
+            return {
+                message: `Failed update payment, exception occured ${e}`,
+                success: false,
+            };
+        }
+    }
 
-			if (!payment) throw new NotFoundException('invalid payment');
+    async remove(id: string) {
+        try {
+            const payment = await this.paymentModel.findByIdAndDelete(id);
 
-			return {
-				message: 'Payment delete successfully',
-				success: true
-			};
-		}
-		catch (e: any)
-		{
-			return {
-				message: `Failed delete payment, exception occured ${e}`,
-				success: false
-			};
-		}
-	}
+            if (!payment) throw new NotFoundException('invalid payment');
 
-	async payment_completed(paymentData: CreatePaymentDto)
-	{
-		
-	}
+            return {
+                message: 'Payment delete successfully',
+                success: true,
+            };
+        } catch (e: any) {
+            return {
+                message: `Failed delete payment, exception occured ${e}`,
+                success: false,
+            };
+        }
+    }
 
-	private transaction_token
+    async payment_completed(paymentData: CreatePaymentDto) {}
+
+    private transaction_token;
 }

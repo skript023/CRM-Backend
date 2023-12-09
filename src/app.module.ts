@@ -19,18 +19,20 @@ import { CartsModule } from './carts/carts.module';
         ScheduleModule.forRoot(),
         ConfigModule.forRoot({
             envFilePath: '.env',
-            isGlobal: true
+            isGlobal: true,
         }),
-        MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ellohim.i9hc8.mongodb.net/${process.env.DB_CLUSTER}?retryWrites=true&w=majority`),
+        MongooseModule.forRoot(
+            `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ellohim.i9hc8.mongodb.net/${process.env.DB_CLUSTER}?retryWrites=true&w=majority`,
+        ),
         ActivityModule,
         AuthModule,
         ProductsModule,
         AssetModule,
         OrderModule,
         PaymentModule,
-        CartsModule
+        CartsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
- })
+})
 export class AppModule {}

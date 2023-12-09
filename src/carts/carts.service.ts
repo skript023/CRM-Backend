@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { Cart } from './schema/cart.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateCartDto } from './dto/create-cart.dto';
@@ -7,117 +11,110 @@ import { UpdateCartDto } from './dto/update-cart.dto';
 import * as mongoose from 'mongoose';
 
 @Injectable()
-export class CartsService
-{
-    constructor(@InjectModel(Cart.name) private cartModel: mongoose.Model<Cart>) { }
+export class CartsService {
+    constructor(
+        @InjectModel(Cart.name) private cartModel: mongoose.Model<Cart>,
+    ) {}
 
-    async create(cartData: CreateCartDto)
-    {
-        try
-        {
-            const exist = await this.cartModel.findOne({ product_id: cartData.product_id });
+    async create(cartData: CreateCartDto) {
+        try {
+            const exist = await this.cartModel.findOne({
+                product_id: cartData.product_id,
+            });
 
-            if (exist)
-            {
+            if (exist) {
                 cartData.quantity += exist.quantity;
 
-                const cart = await this.cartModel.findByIdAndUpdate(exist._id, cartData);
+                const cart = await this.cartModel.findByIdAndUpdate(
+                    exist._id,
+                    cartData,
+                );
 
                 if (!cart) throw new NotFoundException('Invalid data');
 
                 return {
                     message: 'Successfully added to cart',
-                    success: true
+                    success: true,
                 };
-            }
-            else
-            {
+            } else {
                 await this.cartModel.create(cartData);
 
                 return {
                     message: 'Successfully added to cart',
-                    success: true
+                    success: true,
                 };
             }
-        }
-        catch (e: any)
-        {
+        } catch (e: any) {
             return {
                 message: `Failed added to cart, exception occured ${e}`,
-                success: false
+                success: false,
             };
         }
     }
 
-    async findAll()
-    {
+    async findAll() {
         return this.cartModel.find().populate('order').populate('product');
     }
 
-    async findOne(id: string)
-    {
-        try
-        {
-            if (id === 'undefined')
-            {
+    async findOne(id: string) {
+        try {
+            if (id === 'undefined') {
                 throw new BadRequestException('Invalid params');
             }
 
-            const carts = this.cartModel.find({ user_id: id }).populate('order').populate('product');
+            const carts = this.cartModel
+                .find({ user_id: id })
+                .populate('order')
+                .populate('product');
 
             if (!carts) throw new NotFoundException('Invalid user cart');
 
             return carts;
-        }
-        catch (e: any)
-        {
+        } catch (e: any) {
             return {
                 message: `Cannot retrieve cart, error caught on ${e.message}`,
-                success: false
+                success: false,
             };
         }
     }
 
-    async update(id: string, cartData: UpdateCartDto)
-    {
-        try
-        {
-            const cart = await this.cartModel.findOneAndUpdate({product_id: id}, cartData);
+    async update(id: string, cartData: UpdateCartDto) {
+        try {
+            const cart = await this.cartModel.findOneAndUpdate(
+                { product_id: id },
+                cartData,
+            );
 
             if (!cart) throw new NotFoundException('data invalid');
 
             return {
                 message: `Cart updated successfully`,
-                success: true
+                success: true,
             };
-        }
-        catch(e: any)
-        { 
+        } catch (e: any) {
             return {
                 message: `Failed update cart, exception occured ${e}`,
-                success: false
+                success: false,
             };
         }
     }
 
-    async remove(id: string)
-    {
-        try
-        {
-            const cart = await this.cartModel.findOneAndDelete({ product_id: id});
+    async remove(id: string) {
+        try {
+            const cart = await this.cartModel.findOneAndDelete({
+                product_id: id,
+            });
 
             if (!cart) throw new NotFoundException('data invalid');
 
             return {
                 message: `Cart delete successfully`,
-                success: true
+                success: true,
             };
-        }
-        catch(e: any)
-        {
+        } catch (e: any) {
             return {
                 message: `Failed delete cart, exception occured ${e}`,
-                success: false
+                success: false,
             };
         }
     }
