@@ -15,7 +15,7 @@ export class AuthService {
     ) {}
 
     async signIn(username: string, password: string): Promise<any> {
-        const user = await await this.usersService.login(username, password);
+        const user = await this.usersService.login(username, password);
 
         const encrypted = await this.encrypt(
             JSON.stringify({ _state: user._id }),
