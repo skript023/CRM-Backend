@@ -4,25 +4,16 @@ import * as mongoose from 'mongoose';
 import { Activity } from './schema/activity.schema';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { CreateActivityDto } from './dto/create-activity.dto';
+import response from '../interfaces/response.dto';
 
 @Injectable()
 export class ActivityService {
     constructor(
         @InjectModel(Activity.name)
         private activityModel: mongoose.Model<Activity>,
+        private response: response<Activity>
     ) {}
 
-    getHello(): string {
-        return 'Hello Activity';
-    }
-
-    async findAll(): Promise<Activity[]> {
-        const activities = await this.activityModel
-            .find(null, { createdAt: 0, updatedAt: 0, __v: 0 })
-            .populate('user', ['fullname', 'username']);
-
-        return activities;
-    }
 
     async create(activity: CreateActivityDto): Promise<Activity> {
         const res = await this.activityModel.create(activity);
@@ -30,32 +21,55 @@ export class ActivityService {
         return res;
     }
 
-    async findById(id: string): Promise<Activity> {
-        const res = await this.activityModel
+
+    async findAll() {
+        const activities = await this.activityModel
+            .find(null, { createdAt: 0, updatedAt: 0, __v: 0 })
+            .populate('user', ['fullname', 'username']);
+
+        this.response.data = activities;
+        this.response.message = 'Success retrieve tasks';
+        this.response.success = true;
+
+        return this.response.json();
+    }
+
+    async findOne(id: string) {
+        const activity = await this.activityModel
             .findById(id, { createdAt: 0, updatedAt: 0, __v: 0 })
             .populate('user', ['fullname', 'username']);
 
-        if (!res) throw new NotFoundException('Activity not found.');
+        if (!activity) throw new NotFoundException('Task not found.');
 
-        return res;
+        this.response.data = activity;
+        this.response.message = 'Success retrieve task';
+        this.response.success = true;
+
+        return this.response.json();
     }
 
-    async update(id: string, activity: UpdateActivityDto): Promise<Activity> {
-        const res = await this.activityModel.findByIdAndUpdate(id, activity, {
+    async update(id: string, activity: UpdateActivityDto) {
+        const result = await this.activityModel.findByIdAndUpdate(id, activity, {
             new: true,
             runValidators: true,
         });
 
-        if (!res) throw new NotFoundException('Activity not found.');
+        if (!result) throw new NotFoundException('Unable to update non-existing data');
 
-        return res;
+        this.response.message = 'Success update task';
+        this.response.success = true;
+
+        return this.response.json();
     }
 
-    async delete(id: string): Promise<Activity> {
-        const res = await this.activityModel.findByIdAndDelete(id);
+    async remove(id: string) {
+        const result = await this.activityModel.findByIdAndDelete(id);
 
-        if (!res) throw new NotFoundException('Activity not found.');
+        if (!result) throw new NotFoundException('Activity not found.');
 
-        return res;
+        this.response.message = 'Success delete task';
+        this.response.success = true;
+
+        return this.response.json();
     }
 }

@@ -1,8 +1,5 @@
 import {
-    forwardRef,
-    Inject,
     Injectable,
-    UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
@@ -10,12 +7,12 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UsersService,
+        private userService: UsersService,
         private jwtService: JwtService,
     ) {}
 
     async signIn(username: string, password: string): Promise<any> {
-        const user = await this.usersService.login(username, password);
+        const user = await this.userService.login(username, password);
 
         const encrypted = await this.encrypt(
             JSON.stringify({ _state: user._id }),
@@ -26,10 +23,6 @@ export class AuthService {
         return {
             token: await this.jwtService.signAsync(payload),
         };
-    }
-
-    async find_by_id(id: string) {
-        return this.usersService.find_by_id(id);
     }
 
     private async encrypt(text: string): Promise<string> {

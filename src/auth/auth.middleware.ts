@@ -18,24 +18,22 @@ export class AuthMiddleware implements NestMiddleware {
         const token = this.extractTokenFromCookie(req);
 
         if (!token)
-            throw new UnauthorizedException(
-                'MWC01 - You are not logged in, please login!',
-            );
+            throw new UnauthorizedException('MWC01 - You are not logged in, please login!');
 
-        try {
+        try
+        {
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: process.env.SECRET,
             });
 
             const data = JSON.parse(this.decrypt(payload.encrypted));
 
-            const user = await this.userService.find_by_id(data._state);
-
-            req['user'] = user;
-        } catch {
-            throw new UnauthorizedException(
-                'MWC02 - Your login has been expired, please login again!',
-            );
+            const user = await this.userService.findOne(data._state);
+            req['user'] = user.data;
+        }
+        catch (ex: any)
+        {
+            return ex.message;
         }
 
         next();

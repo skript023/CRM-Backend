@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './schema/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import response from '../interfaces/response.dto';
 
 import * as fs from 'fs';
 
@@ -18,6 +19,7 @@ import * as fs from 'fs';
 export class UsersService {
     constructor(
         @InjectModel(User.name) private userModel: mongoose.Model<User>,
+        private response: response<User>
     ) {}
 
     async create(user: CreateUserDto, file: Express.Multer.File) {
@@ -34,35 +36,49 @@ export class UsersService {
 
         user.image = file.filename;
 
-        try {
+        try
+        {
             await this.userModel.create(user);
-        } catch {
+        }
+        catch
+        {
             throw new InternalServerErrorException();
         }
 
-        return {
-            message: 'Account creation success',
-            success: true,
-        };
+        this.response.message = 'Register success';
+        this.response.success = true;
+
+        return this.response.json();
     }
 
-    async users(): Promise<User[]> {
+    async findAll() {
         const users = await this.userModel
             .find(null, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 })
             .populate('role', ['name', 'level', 'access']);
 
-        return users;
+        this.response.message = 'Success Find Users';
+        this.response.data = users;
+        this.response.success = true;
+
+        return this.response.json();
     }
 
-    async find_by_id(id: string): Promise<User> {
-        const user = await this.userModel
-            .findById(id, { password: 0, updatedAt: 0, __v: 0 })
-            .populate('role', ['name', 'level', 'access'])
-            .populate('asset', ['license', 'status', 'expired', 'expired_date'])
-            .populate('activity', ['name', 'start_date', 'end_date', 'status'])
-            .populate('order');
+    async findOne(id: string) {
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new BadRequestException(`${id} is not valid arguments`);
 
-        return user;
+        const user = await this.userModel.findById(id, { password: 0, updatedAt: 0, __v: 0 })
+            .populate('role', ['name', 'level', 'access'])
+            //.populate('asset', ['license', 'status', 'expired', 'expired_date'])
+            //.populate('activity', ['name', 'start_date', 'end_date', 'status'])
+            //.populate('order');
+
+        if (!user) throw new NotFoundException('User not found');
+
+        this.response.message = 'Success Find Users';
+        this.response.data = user;
+        this.response.success = true;
+
+        return this.response.json();
     }
 
     async login(username: string, password: string): Promise<User> {
@@ -108,13 +124,13 @@ export class UsersService {
 
         if (!result) throw new NotFoundException('User not found.');
 
-        return {
-            message: `Success update ${result.fullname} data`,
-            success: true,
-        };
+        this.response.message = `Success update ${result.fullname} data`;
+        this.response.success = true;
+
+        return this.response.json();
     }
 
-    async delete(id: string): Promise<any> {
+    async remove(id: string): Promise<any> {
         const user = (await this.userModel.findByIdAndDelete(id, {
             select: ['fullname'],
         })) as User;
@@ -127,10 +143,10 @@ export class UsersService {
             fs.unlinkSync(path);
         }
 
-        return {
-            message: `Success delete ${user.fullname} data`,
-            success: true,
-        };
+        this.response.message = `Success update ${user.fullname} data`;
+        this.response.success = true;
+
+        return this.response.json();
     }
 
     private async does_user_exist(

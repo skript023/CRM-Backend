@@ -23,7 +23,7 @@ export class ActivityController {
         access: 'read',
     })
     @Get()
-    async activities(): Promise<Activity[]> {
+    findAll() {
         return this.activityService.findAll();
     }
 
@@ -31,35 +31,23 @@ export class ActivityController {
         role: ['admin', 'staff'],
         access: 'read',
     })
-    @Get('detail/:id')
-    async get_by_id(@Param('id') id: string): Promise<Activity> {
-        return this.activityService.findById(id);
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.activityService.findOne(id);
     }
 
-    async get_by_user_id(@Param('id') user_id: string): Promise<Activity> {
-        return this.activityService.findById(user_id);
-    }
-
-    @Post('add')
-    async create(@Body() body: CreateActivityDto): Promise<Activity> {
+    @Post()
+    create(@Body() body: CreateActivityDto) {
         return this.activityService.create(body);
     }
 
-    @Patch('update/:id')
-    async update(@Param('id') id: string, @Body() activity: UpdateActivityDto) {
-        const res = await this.activityService.update(id, activity);
-
-        return {
-            message: `Success update ${res.name} activity`,
-        };
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() activity: UpdateActivityDto) {
+        return this.activityService.update(id, activity);
     }
 
-    @Delete('delete/:id')
-    async delete(@Param('id') id: string) {
-        const res = await this.activityService.delete(id);
-
-        return {
-            message: `Success delete ${res.name} activity `,
-        };
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.activityService.remove(id);
     }
 }

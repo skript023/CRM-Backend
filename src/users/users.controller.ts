@@ -29,9 +29,9 @@ import { Auth } from '../auth/decorator/auth.decorator';
 export class UsersController {
     constructor(private userService: UsersService) {}
 
-    @Post('add')
+    @Post()
     @UseInterceptors(FileInterceptor('image'))
-    async create(
+    create(
         @Body() createUserDto: CreateUserDto,
         @UploadedFile(
             new ParseFilePipe({
@@ -48,7 +48,7 @@ export class UsersController {
     }
 
     @Get('avatar/:name')
-    async image(@Param('name') name, @Res() res: Response) {
+    image(@Param('name') name, @Res() res: Response) {
         if (fs.existsSync(`${__dirname}/assets/avatar/${name}`)) {
             res.sendFile(name, { root: `${__dirname}/assets/avatar/` });
         } else {
@@ -59,7 +59,7 @@ export class UsersController {
     }
 
     @Delete('avatar/delete/:name')
-    async delete_image(@Param('name') name) {
+    delete_image(@Param('name') name) {
         fs.unlinkSync(`${__dirname}/assets/avatar/${name}`);
     }
 
@@ -68,22 +68,22 @@ export class UsersController {
         access: 'read',
     })
     @Get()
-    async users(): Promise<User[]> {
-        return this.userService.users();
+    findAll() {
+        return this.userService.findAll();
     }
 
     @Auth({
         role: ['admin', 'staff'],
         access: 'read',
     })
-    @Get('detail/:id')
-    async get_by_id(@Param('id') id: string): Promise<User> {
-        return this.userService.find_by_id(id);
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.userService.findOne(id);
     }
 
     @UseInterceptors(FileInterceptor('image'))
-    @Patch('update/:id')
-    async update(
+    @Patch(':id')
+    update(
         @Param('id') id: string,
         @Body() updateUserDto: UpdateUserDto,
         @UploadedFile(
@@ -104,13 +104,13 @@ export class UsersController {
         role: ['admin', 'staff'],
         access: 'delete',
     })
-    @Delete('delete/:id')
-    async delete(@Param('id') id: string) {
-        return this.userService.delete(id);
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.userService.remove(id);
     }
 
-    @Get('profile')
-    async getProfile(@Request() req) {
+    @Get('profile/detail')
+    getProfile(@Request() req) {
         return req.user;
     }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -13,6 +13,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { CartsModule } from './carts/carts.module';
+import { AuthMiddleware } from './auth/auth.middleware';
+import { AuthService } from './auth/auth.service';
+import { UsersService } from './users/users.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -25,6 +29,8 @@ import { CartsModule } from './carts/carts.module';
             `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ellohim.i9hc8.mongodb.net/${process.env.DB_CLUSTER}?retryWrites=true&w=majority`,
         ),
         ActivityModule,
+        UsersModule,
+        RoleModule,
         AuthModule,
         ProductsModule,
         AssetModule,
@@ -35,4 +41,54 @@ import { CartsModule } from './carts/carts.module';
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes(
+            { path: 'auth/profile', method: RequestMethod.GET },
+            { path: 'auth/logout', method: RequestMethod.GET },
+
+            { path: 'user', method: RequestMethod.GET },
+            { path: 'user/:id', method: RequestMethod.GET },
+            { path: 'user/:id', method: RequestMethod.PATCH },
+            { path: 'user/avatar/:name', method: RequestMethod.GET },
+            { path: 'user/profile/detail', method: RequestMethod.GET },
+            { path: 'user/:id', method: RequestMethod.DELETE },
+
+            { path: 'role', method: RequestMethod.GET },
+            { path: 'role/add', method: RequestMethod.POST },
+            { path: 'role/detail/:id', method: RequestMethod.GET },
+            { path: 'role/update/:id', method: RequestMethod.PATCH },
+            { path: 'role/delete/:id', method: RequestMethod.DELETE },
+
+            { path: 'activity', method: RequestMethod.GET },
+            { path: 'activity', method: RequestMethod.POST },
+            { path: 'activity/:id', method: RequestMethod.GET },
+            { path: 'activity/:id', method: RequestMethod.PATCH },
+            { path: 'activity/:id', method: RequestMethod.DELETE },
+
+            { path: 'asset', method: RequestMethod.GET },
+            { path: 'asset/add', method: RequestMethod.POST },
+            { path: 'asset/detail/:id', method: RequestMethod.GET },
+            { path: 'asset/update/:id', method: RequestMethod.PATCH },
+            { path: 'asset/delete/:id', method: RequestMethod.DELETE },
+
+            { path: 'products', method: RequestMethod.GET },
+            { path: 'products/add', method: RequestMethod.POST },
+            { path: 'products/detail/:id', method: RequestMethod.GET },
+            { path: 'products/update/:id', method: RequestMethod.PATCH },
+            { path: 'products/delete/:id', method: RequestMethod.DELETE },
+
+            { path: 'carts', method: RequestMethod.GET },
+            { path: 'carts', method: RequestMethod.POST },
+            { path: 'carts/:id', method: RequestMethod.GET },
+            { path: 'carts/:id', method: RequestMethod.PATCH },
+            { path: 'carts/:id', method: RequestMethod.DELETE },
+
+            { path: 'payment', method: RequestMethod.GET },
+            { path: 'payment', method: RequestMethod.POST },
+            { path: 'payment/:id', method: RequestMethod.GET },
+            { path: 'payment/:id', method: RequestMethod.PATCH },
+            { path: 'payment/:id', method: RequestMethod.DELETE },
+        );
+    }
+}
