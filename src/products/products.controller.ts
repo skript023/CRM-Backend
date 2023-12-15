@@ -26,7 +26,7 @@ export class ProductsController {
         access: 'create',
     })
     @UseInterceptors(FileInterceptor('file'))
-    @Post('add')
+    @Post()
     create(
         @Body() createProductDto: CreateProductDto,
         @UploadedFile(
@@ -53,7 +53,7 @@ export class ProductsController {
         role: ['admin', 'staff'],
         access: 'read',
     })
-    @Get('detail/:id')
+    @Get(':id')
     findOne(@Param('id') id: string) {
         return this.productsService.findOne(id);
     }
@@ -62,7 +62,7 @@ export class ProductsController {
         role: ['admin', 'staff'],
         access: 'update',
     })
-    @Patch('update/:id')
+    @Patch(':id')
     @UseInterceptors(FileInterceptor('file'))
     update(
         @Param('id') id: string,
@@ -82,7 +82,7 @@ export class ProductsController {
         role: ['admin', 'staff'],
         access: 'delete',
     })
-    @Delete('delete/:id')
+    @Delete(':id')
     remove(@Param('id') id: string) {
         return this.productsService.remove(id);
     }

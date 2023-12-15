@@ -2,12 +2,13 @@ import { Module, NotAcceptableException } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProductSchema } from './schema/product.schema';
+import { Product, ProductSchema } from './schema/product.schema';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
 import * as fs from 'fs';
+import response from '../interfaces/response.dto';
 
 @Module({
     imports: [
@@ -49,7 +50,7 @@ import * as fs from 'fs';
         }),
     ],
     controllers: [ProductsController],
-    providers: [ProductsService],
+    providers: [ProductsService, response<Product>],
 })
 export class ProductsModule {}
 

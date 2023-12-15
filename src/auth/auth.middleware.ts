@@ -31,9 +31,9 @@ export class AuthMiddleware implements NestMiddleware {
             const user = await this.userService.findOne(data._state);
             req['user'] = user.data;
         }
-        catch (ex: any)
+        catch
         {
-            return ex.message;
+            throw new UnauthorizedException('MWC02 - Your login has been expired, please login again!');
         }
 
         next();

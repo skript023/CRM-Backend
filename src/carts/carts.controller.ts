@@ -16,22 +16,22 @@ export class CartsController {
     constructor(private readonly cartsService: CartsService) {}
 
     @Post()
-    async create(@Body() createCartDto: CreateCartDto) {
+    create(@Body() createCartDto: CreateCartDto) {
         return this.cartsService.create(createCartDto);
     }
 
     @Get()
-    async findAll() {
+    findAll() {
         return this.cartsService.findAll();
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: string) {
+    findOne(@Param('id') id: string) {
         return this.cartsService.findOne(id);
     }
 
     @Patch(':id')
-    async update(
+    update(
         @Param('id') id: string,
         @Body() updateCartDto: UpdateCartDto,
     ) {
@@ -39,7 +39,7 @@ export class CartsController {
     }
 
     @Delete(':id')
-    async remove(@Param('id') id: string) {
+    remove(@Param('id') id: string) {
         return this.cartsService.remove(id);
     }
 }

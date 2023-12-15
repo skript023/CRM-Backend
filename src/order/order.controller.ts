@@ -16,7 +16,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 export class OrderController {
     constructor(private readonly orderService: OrderService) {}
 
-    @Post('create')
+    @Post()
     async create(@Body() createOrderDto: CreateOrderDto, @Req() req) {
         return this.orderService.create(createOrderDto, req);
     }
@@ -26,12 +26,12 @@ export class OrderController {
         return this.orderService.findAll();
     }
 
-    @Get('detail/:id')
+    @Get(':id')
     async findOne(@Param('id') id: string) {
         return this.orderService.findOne(id);
     }
 
-    @Patch('update/:id')
+    @Patch(':id')
     async update(
         @Param('id') id: string,
         @Body() updateOrderDto: UpdateOrderDto,
@@ -39,7 +39,7 @@ export class OrderController {
         return this.orderService.update(id, updateOrderDto);
     }
 
-    @Delete('delete/:id')
+    @Delete(':id')
     async remove(@Param('id') id: string) {
         return this.orderService.remove(id);
     }
