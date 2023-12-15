@@ -17,6 +17,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { JwtModule } from '@nestjs/jwt';
+import { BasicMiddleware } from './auth/basic,middleware';
 
 @Module({
     imports: [
@@ -89,6 +90,10 @@ export class AppModule implements NestModule {
             { path: 'payment/:id', method: RequestMethod.GET },
             { path: 'payment/:id', method: RequestMethod.PATCH },
             { path: 'payment/:id', method: RequestMethod.DELETE },
+        );
+
+        consumer.apply(BasicMiddleware).forRoutes(
+            { path: 'activity/migration', method: RequestMethod.POST },
         );
     }
 }

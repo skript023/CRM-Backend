@@ -11,7 +11,7 @@ import { UsersService } from '../users/users.service';
 export class AuthMiddleware implements NestMiddleware {
     constructor(
         private jwtService: JwtService,
-        private userService: UsersService,
+        private userService: UsersService
     ) {}
 
     async use(req: Request, res: Response, next: NextFunction) {

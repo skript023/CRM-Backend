@@ -18,6 +18,16 @@ import { Auth } from '../auth/decorator/auth.decorator';
 export class ActivityController {
     constructor(private activityService: ActivityService) {}
 
+    @Post('migration')
+    migrate(@Body() body: CreateActivityDto) {
+        return this.activityService.create(body);
+    }
+
+    @Post()
+    create(@Body() body: CreateActivityDto) {
+        return this.activityService.create(body);
+    }
+
     @Auth({
         role: ['admin', 'staff'],
         access: 'read',
@@ -34,11 +44,6 @@ export class ActivityController {
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.activityService.findOne(id);
-    }
-
-    @Post()
-    create(@Body() body: CreateActivityDto) {
-        return this.activityService.create(body);
     }
 
     @Patch(':id')

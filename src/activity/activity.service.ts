@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Activity } from './schema/activity.schema';
@@ -14,13 +14,16 @@ export class ActivityService {
         private response: response<Activity>
     ) {}
 
+    async create(activity: CreateActivityDto) {
+        const result = await this.activityModel.create(activity);
 
-    async create(activity: CreateActivityDto): Promise<Activity> {
-        const res = await this.activityModel.create(activity);
+        if (!result) throw new InternalServerErrorException('Failed create task');
 
-        return res;
+        this.response.message = `Success create task ${result.name}`;
+        this.response.success = true;
+
+        return this.response.json();
     }
-
 
     async findAll() {
         const activities = await this.activityModel
