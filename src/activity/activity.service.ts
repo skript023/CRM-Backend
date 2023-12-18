@@ -55,6 +55,9 @@ export class ActivityService {
     }
 
     async update(id: string, activity: UpdateActivityDto) {
+        activity.start_date = new Date(activity.start_date).toLocaleDateString();
+        activity.end_date = new Date(activity.end_date).toLocaleDateString();
+
         const result = await this.activityModel.findByIdAndUpdate(id, activity, {
             new: true,
             runValidators: true,
