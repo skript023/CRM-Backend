@@ -15,6 +15,9 @@ export class ActivityService {
     ) {}
 
     async create(activity: CreateActivityDto) {
+        activity.start_date = new Date(activity.start_date).toLocaleDateString();
+        activity.end_date = new Date(activity.end_date).toLocaleDateString();
+
         const result = await this.activityModel.create(activity);
 
         if (!result) throw new InternalServerErrorException('Failed create task');

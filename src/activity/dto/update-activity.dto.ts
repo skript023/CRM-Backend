@@ -1,14 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateActivityDto } from './create-activity.dto';
 
-export class UpdateActivityDto {
-    @IsNotEmpty()
-    readonly name: string;
-    @IsNotEmpty()
-    readonly user_id: string;
-    @IsNotEmpty()
-    readonly start_date: string;
-    @IsNotEmpty()
-    readonly end_date: string;
-    @IsNotEmpty()
-    readonly status: string;
+export class UpdateActivityDto extends PartialType(CreateActivityDto) {
 }
