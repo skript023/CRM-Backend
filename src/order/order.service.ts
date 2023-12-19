@@ -10,41 +10,49 @@ import { Payment } from 'src/payment/schema/payment.schema';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import * as mongoose from 'mongoose';
+import response from 'src/interfaces/response.dto';
 
 @Injectable()
 export class OrderService {
     constructor(
         @InjectModel(Order.name) private orderModel: mongoose.Model<Order>,
         @InjectModel(Asset.name) private assetModel: mongoose.Model<Asset>,
-        @InjectModel(Payment.name)
-        private paymentModel: mongoose.Model<Payment>,
+        @InjectModel(Payment.name) private paymentModel: mongoose.Model<Payment>,
         @InjectModel(Cart.name) private cartModel: mongoose.Model<Cart>,
+        private response: response<Order>
     ) {}
 
     async create(orderData: CreateOrderDto, req: Request) {
-        try {
-            const doc = await this.orderModel.create(orderData);
+        const order = await this.orderModel.create(orderData);
 
-            if (!doc) throw new NotFoundException('Failed create order');
+        if (!order) throw new NotFoundException('Failed create order');
 
-            return {
-                message: 'Order added to cart',
-                success: true,
-            };
-        } catch (error: any) {
-            return {
-                message: error,
-                success: false,
-            };
-        }
+        this.response.message = `Success create order`;
+        this.response.success = true;
+
+        return this.response.json();
     }
 
     async findAll() {
-        return this.orderModel.find();
+        const orders = await this.orderModel.find();
+
+        this.response.message = `Success Get Orders`;
+        this.response.success = true;
+        this.response.data = orders;
+
+        return this.response.json();
     }
 
     async findOne(id: string) {
-        return this.orderModel.findById(id);
+        const order = await this.orderModel.findById(id);
+
+        if (!order) throw new NotFoundException('Order not found');
+
+        this.response.message = `Success Get Order`;
+        this.response.success = true;
+        this.response.data = order;
+
+        return this.response.json();
     }
 
     async update(id: string, orderData: UpdateOrderDto) {
@@ -55,12 +63,12 @@ export class OrderService {
             })
             .populate('product', ['name'])) as any;
 
-        if (!order) throw new NotFoundException('Invalid order');
+        if (!order) throw new NotFoundException('Unable update non-existing order');
 
-        return {
-            message: `Update ${order.product?.name} order success`,
-            success: true,
-        };
+        this.response.message = `Success update order ${order.product?.name}`;
+        this.response.success = true;
+        
+        return this.response.json();
     }
 
     async remove(id: string) {
@@ -68,12 +76,12 @@ export class OrderService {
             .findByIdAndDelete(id)
             .populate('product', ['name'])) as any;
 
-        if (!order) throw new NotFoundException('Invalid order');
+        if (!order) throw new NotFoundException('Unable delete non-existing order');
 
-        return {
-            message: `Update ${order.product?.name} order success`,
-            success: true,
-        };
+        this.response.message = `Success delete order ${order.product?.name}`;
+        this.response.success = true;
+
+        return this.response.json();
     }
 
     async createAsset() {

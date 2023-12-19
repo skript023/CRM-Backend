@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { OrderSchema } from './schema/order.schema';
+import { Order, OrderSchema } from './schema/order.schema';
 import { OrderController } from './order.controller';
 import { UserSchema } from '../users/schema/user.schema';
 import { CartSchema } from '../carts/schema/cart.schema';
 import { AssetSchema } from 'src/asset/schema/asset.schema';
 import { PaymentSchema } from 'src/payment/schema/payment.schema';
 import { ConfigModule } from '@nestjs/config';
+import response from 'src/interfaces/response.dto';
 
 @Module({
     imports: [
@@ -24,6 +25,6 @@ import { ConfigModule } from '@nestjs/config';
         }),
     ],
     controllers: [OrderController],
-    providers: [OrderService],
+    providers: [OrderService, response<Order>],
 })
 export class OrderModule {}
