@@ -65,7 +65,7 @@ export class ActivityService {
 
         if (!result) throw new NotFoundException('Unable to update non-existing data');
 
-        this.response.message = 'Success update task';
+        this.response.message = `Success update ${result.name} task`;
         this.response.success = true;
 
         return this.response.json();
@@ -76,7 +76,7 @@ export class ActivityService {
 
         if (!result) throw new NotFoundException('Activity not found.');
 
-        this.response.message = 'Success delete task';
+        this.response.message = `Success delete ${result.name} task`;
         this.response.success = true;
 
         return this.response.json();
