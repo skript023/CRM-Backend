@@ -23,6 +23,11 @@ export class ActivityController {
         return this.activityService.create(body);
     }
 
+    @Patch('complete/:id')
+    completeTask(@Param('id') id: string) {
+        return this.activityService.completeTask(id);
+    }
+
     @Post()
     create(@Body() body: CreateActivityDto) {
         return this.activityService.create(body);

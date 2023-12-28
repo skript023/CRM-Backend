@@ -81,4 +81,23 @@ export class ActivityService {
 
         return this.response.json();
     }
+
+    async completeTask(id: string) {
+        const activity = await this.activityModel.findById(id);
+
+        if (!activity) throw new NotFoundException('Activity not found.');
+
+        activity.status = 'Completed';
+        activity.end_date = new Date().toLocaleDateString();
+
+        this.activityModel.findByIdAndUpdate(id, activity, {
+            new: true,
+            runValidators: true,
+        });
+
+        this.response.message = 'Success delete task';
+        this.response.success = true;
+
+        return this.response.json();
+    }
 }
