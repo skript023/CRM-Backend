@@ -83,19 +83,19 @@ export class ActivityService {
     }
 
     async completeTask(id: string) {
-        const activity = await this.activityModel.findById(id);
+        const activity = await this.activityModel.findById(id) as UpdateActivityDto;
 
         if (!activity) throw new NotFoundException('Activity not found.');
 
         activity.status = 'Completed';
         activity.end_date = new Date().toLocaleDateString();
 
-        this.activityModel.findByIdAndUpdate(id, activity, {
+        const result = await this.activityModel.findByIdAndUpdate(id, activity, {
             new: true,
             runValidators: true,
         });
 
-        this.response.message = 'Success tag task as completed';
+        this.response.message = `${result.name} task mark as completed`;
         this.response.success = true;
 
         return this.response.json();
