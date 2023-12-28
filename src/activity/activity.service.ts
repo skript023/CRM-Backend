@@ -95,7 +95,7 @@ export class ActivityService {
             runValidators: true,
         });
 
-        this.response.message = 'Success delete task';
+        this.response.message = 'Success tag task as completed';
         this.response.success = true;
 
         return this.response.json();
