@@ -4,12 +4,10 @@ import {
     Body,
     Post,
     Param,
-    Put,
     Delete,
     Patch,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
-import { Activity } from './schema/activity.schema';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Auth } from '../auth/decorator/auth.decorator';
