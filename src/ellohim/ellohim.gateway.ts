@@ -5,7 +5,7 @@ import { UpdateEllohimDto } from './dto/update-ellohim.dto';
 import { Logger } from '@nestjs/common';
 import { Server } from 'net';
 
-@WebSocketGateway()
+@WebSocketGateway({path: 'ws/ellohim'})
 export class EllohimGateway {
 	constructor(private readonly ellohimService: EllohimService) {}
 
