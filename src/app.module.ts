@@ -17,7 +17,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { JwtModule } from '@nestjs/jwt';
-import { BasicMiddleware } from './auth/basic,middleware';
+import { BasicMiddleware } from './auth/basic.middleware';
 import { EllohimModule } from './ellohim/ellohim.module';
 import { PermissionModule } from './permission/permission.module';
 
