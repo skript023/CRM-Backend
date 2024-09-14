@@ -1,0 +1,12 @@
+version: "3.5"
+services:
+  ellohim:
+    build: .
+    container_name: ellohim-service
+    restart: unless-stopped
+    init: true
+    ports:
+      - 3001:3000
+    volumes:
+      - ./storage:/usr/src/app/storage
+      - ./:/usr/src/app
