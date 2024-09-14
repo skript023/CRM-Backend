@@ -7,13 +7,10 @@ export class EllohimService
 {
 	async create(createEllohimDto: CreateEllohimDto) 
 	{
-		if (createEllohimDto)
-		{
-			Logger.debug(createEllohimDto.os);
-			Logger.debug(createEllohimDto.cpu);
-			Logger.debug(createEllohimDto.gpu);
-			Logger.debug(createEllohimDto.motherboard);
-		}
+		Logger.debug(createEllohimDto.os);
+		Logger.debug(createEllohimDto.cpu);
+		Logger.debug(createEllohimDto.gpu);
+		Logger.debug(createEllohimDto.motherboard);
 
 		return 'Data received by Ellohim';
 	}
