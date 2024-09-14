@@ -7,6 +7,8 @@ export class EllohimService
 {
 	async create(createEllohimDto: CreateEllohimDto) 
 	{
+		Logger.log(createEllohimDto);
+		
 		Logger.debug(createEllohimDto.os);
 		Logger.debug(createEllohimDto.cpu);
 		Logger.debug(createEllohimDto.gpu);
