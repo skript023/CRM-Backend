@@ -20,7 +20,7 @@ COPY env.server ./.env
 RUN npm run build
 
 # Expose the port on which the app will run
-EXPOSE 3005
+EXPOSE 3000
 
 # RUN -d -p 3306:3306 --name gaboot-cms -e MYSQL_ROOT_PASSWORD= MYSQL_DATABASE=gaboot -e MYSQL_USER=root -e MYSQL_PASSWORD= mysql/mysql-server:latest
 
