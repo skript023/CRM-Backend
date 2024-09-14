@@ -14,7 +14,7 @@ export class EllohimGateway {
 
 	handleConnection(client: WebSocket) {
 		Logger.log('Client connected');
-		client.send(`connected to alpha channel`);
+		client.send(`connected to ellohim`);
 	}
 
 	handleDisconnect(client: WebSocket) {
