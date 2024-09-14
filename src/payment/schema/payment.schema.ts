@@ -24,11 +24,38 @@ export class Payment {
     @Prop({ type: [SchemaTypes.ObjectId], ref: 'Order' })
     order_id: string[];
 
-    @Prop({ required: true })
-    amount: number;
+    @Prop({ type: String, required: true })
+    transaction_id: string;
 
-    @Prop({ default: 'Pending' })
-    status: string;
+    @Prop({ type: String, required: true })
+    merchant_id: string;
+
+    @Prop({ type: Number, required: true })
+    gross_amount: number;
+
+    @Prop({ type: String, default: null })
+    name: string;
+
+    @Prop({ type: String, default: null })
+    description: string;
+
+    @Prop({ type: String, required: true })
+    currency: string;
+
+    @Prop({ type: String, required: true })
+    payment_type: string;
+
+    @Prop({ type: String, required: true })
+    transaction_status: string;
+
+    @Prop({ type: String, required: true })
+    transaction_time: string;
+    
+    @Prop({ type: String, required: true })
+    fraud_status: string;
+    
+    @Prop({ type: String, required: true })
+    expiry_time: string;
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

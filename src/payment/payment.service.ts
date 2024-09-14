@@ -10,13 +10,13 @@ import * as mongoose from 'mongoose';
 const midtrans = require('midtrans-client');
 
 @Injectable()
-export class PaymentService {
-    constructor(
-        @InjectModel(Payment.name)
-        private paymentModel: mongoose.Model<Payment>,
-    ) {}
+export class PaymentService 
+{
+    constructor(@InjectModel(Payment.name)private paymentModel: mongoose.Model<Payment>)
+    {}
 
-    async create(paymentData: CreatePaymentDto) {
+    async create(paymentData: CreatePaymentDto) 
+    {
         try {
             const create = await this.paymentModel.create(paymentData);
             const payment = (await create.populate('user', [
@@ -94,7 +94,7 @@ export class PaymentService {
             if (!payment) throw new NotFoundException('invalid payment');
 
             return {
-                message: `Payment is ${payment.status}`,
+                message: `Payment is ${payment.transaction_status}`,
                 success: true,
             };
         } catch (e: any) {
